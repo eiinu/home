@@ -7,9 +7,10 @@ import './Workspace.css'
 interface WorkspaceProps {
   jsonFormatter?: React.ReactNode
   sseParser?: React.ReactNode
+  keyboardListener?: React.ReactNode
 }
 
-const Workspace: React.FC<WorkspaceProps> = ({ jsonFormatter, sseParser }) => {
+const Workspace: React.FC<WorkspaceProps> = ({ jsonFormatter, sseParser, keyboardListener }) => {
   const [activeApp, setActiveApp] = useState('json-formatter')
   const { theme, setTheme, isDark } = useTheme()
 
@@ -26,14 +27,9 @@ const Workspace: React.FC<WorkspaceProps> = ({ jsonFormatter, sseParser }) => {
       label: 'SSE 解析器'
     },
     {
-      id: 'dashboard',
-      icon: '📊',
-      label: '仪表板'
-    },
-    {
-      id: 'files',
-      icon: '📁',
-      label: '文件管理'
+      id: 'keyboard-listener',
+      icon: '⌨️',
+      label: '键盘监听器'
     },
     {
       id: 'settings',
@@ -56,22 +52,8 @@ const Workspace: React.FC<WorkspaceProps> = ({ jsonFormatter, sseParser }) => {
         return jsonFormatter
       case 'sse-parser':
         return sseParser
-      case 'dashboard':
-        return (
-          <div className="app-placeholder">
-            <div className="placeholder-icon">📊</div>
-            <h2>仪表板</h2>
-            <p>数据分析和可视化面板</p>
-          </div>
-        )
-      case 'files':
-        return (
-          <div className="app-placeholder">
-            <div className="placeholder-icon">📁</div>
-            <h2>文件管理</h2>
-            <p>管理和组织您的文件</p>
-          </div>
-        )
+      case 'keyboard-listener':
+        return keyboardListener
       case 'settings':
         return (
           <div className="app-placeholder">
@@ -105,7 +87,13 @@ const Workspace: React.FC<WorkspaceProps> = ({ jsonFormatter, sseParser }) => {
           </div>
         )
       default:
-        return null
+        return (
+          <div className="app-placeholder">
+            <div className="placeholder-icon">🔧</div>
+            <h2>工具</h2>
+            <p>选择左侧的工具开始使用</p>
+          </div>
+        )
     }
   }
 

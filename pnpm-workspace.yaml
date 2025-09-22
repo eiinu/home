@@ -1,0 +1,7 @@
+packages:
+  # 应用程序包
+  - 'apps/*'
+  # 共享包/库
+  - 'packages/*'
+  # 工具包
+  - 'tools/*'

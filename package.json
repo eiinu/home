@@ -1,42 +1,22 @@
 {
-	"name": "tools-react",
-	"version": "0.0.1",
-	"scripts": {
-		"dev": "vite dev",
-		"build": "vite build",
-		"preview": "vite preview",
-		"check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
-		"check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",
-		"test:unit": "vitest",
-		"lint": "prettier --plugin-search-dir . --check . && eslint .",
-		"format": "prettier --plugin-search-dir . --write ."
-	},
-	"devDependencies": {
-		"@fontsource/fira-mono": "^4.5.10",
-		"@neoconfetti/svelte": "^1.0.0",
-		"@sveltejs/adapter-auto": "^2.1.0",
-		"@sveltejs/kit": "^1.22.4",
-		"@types/cookie": "^0.5.1",
-		"@typescript-eslint/eslint-plugin": "^5.62.0",
-		"@typescript-eslint/parser": "^5.62.0",
-		"@unocss/extractor-svelte": "^0.54.2",
-		"@unocss/preset-icons": "^0.54.2",
-		"@unocss/preset-uno": "^0.54.2",
-		"eslint": "^8.46.0",
-		"eslint-config-prettier": "^8.10.0",
-		"eslint-plugin-svelte3": "^4.0.0",
-		"iconify": "^1.4.0",
-		"prettier": "^2.8.8",
-		"prettier-plugin-svelte": "^2.10.1",
-		"sass": "^1.64.2",
-		"svelte": "^3.59.2",
-		"svelte-check": "^3.4.6",
-		"tslib": "^2.6.1",
-		"typescript": "^4.9.5",
-		"unocss": "^0.54.2",
-		"vite": "^4.4.9",
-		"vitest": "^0.25.8",
-		"lottie-compress": "^1.1.4"
-	},
-	"type": "module"
+  "name": "tools-workspace",
+  "version": "1.0.0",
+  "description": "A pnpm workspace for tools project",
+  "private": true,
+  "scripts": {
+    "preinstall": "npx only-allow pnpm",
+    "build": "pnpm -r build",
+    "dev": "pnpm -r dev",
+    "lint": "pnpm -r lint",
+    "test": "pnpm -r test",
+    "clean": "pnpm -r clean"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "typescript": "^5.0.0"
+  },
+  "engines": {
+    "node": ">=18.0.0",
+    "pnpm": ">=8.0.0"
+  }
 }

@@ -13,6 +13,9 @@ export default defineConfig({
       tsconfigPath: resolve(__dirname, 'tsconfig.app.json')
     })
   ],
+  optimizeDeps: {
+    include: ['@babel/runtime/helpers/extends']
+  },
   build: {
     lib: {
       entry: resolve(__dirname, 'src/index.ts'),

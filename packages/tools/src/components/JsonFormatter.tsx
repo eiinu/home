@@ -2,7 +2,6 @@ import React, { useState, useRef, useEffect } from 'react';
 import { EditorView } from '@codemirror/view';
 import { EditorState } from '@codemirror/state';
 import { json } from '@codemirror/lang-json';
-import { githubLight, githubDark } from '@uiw/codemirror-theme-github';
 import { foldGutter } from '@codemirror/language';
 import { lineNumbers } from '@codemirror/view';
 import { defaultKeymap, history, historyKeymap } from '@codemirror/commands';
@@ -95,6 +94,14 @@ const JsonFormatter: React.FC<JsonFormatterProps> = ({ theme = 'auto' }) => {
       history(),
       keymap.of([...defaultKeymap, ...historyKeymap]),
       json(),
+      EditorState.transactionFilter.of((tr) => {
+        if (tr.docChanged) {
+          const newContent = tr.newDoc.toString();
+          setInput(newContent);
+        }
+        return tr;
+      }),
+      // 使用默认主题，通过 CSS 自定义样式
       EditorView.theme({
         '&': {
           fontSize: '14px',
@@ -108,21 +115,29 @@ const JsonFormatter: React.FC<JsonFormatterProps> = ({ theme = 'auto' }) => {
         '.cm-focused .cm-selectionBackground, ::selection': {
           backgroundColor: isDarkMode ? '#3392FF44' : '#0969da44',
         },
-      }),
-      EditorState.transactionFilter.of((tr) => {
-        if (tr.docChanged) {
-          const newContent = tr.newDoc.toString();
-          setInput(newContent);
-        }
-        return tr;
-      }),
+        '.cm-editor': {
+          backgroundColor: isDarkMode ? '#0d1117' : '#ffffff',
+          color: isDarkMode ? '#e6edf3' : '#24292f',
+        },
+        '.cm-gutters': {
+          backgroundColor: isDarkMode ? '#161b22' : '#f6f8fa',
+          color: isDarkMode ? '#7d8590' : '#656d76',
+          border: 'none',
+        },
+        '.cm-activeLineGutter': {
+          backgroundColor: isDarkMode ? '#21262d' : '#f6f8fa',
+        },
+        '.cm-activeLine': {
+          backgroundColor: isDarkMode ? '#21262d22' : '#f6f8fa',
+        },
+        '.cm-foldGutter .cm-gutterElement': {
+          color: isDarkMode ? '#7d8590' : '#656d76',
+        },
+        '.cm-foldGutter .cm-gutterElement:hover': {
+          backgroundColor: isDarkMode ? '#30363d' : '#f3f4f6',
+        },
+      }, { dark: isDarkMode }),
     ];
-
-    if (isDarkMode) {
-      extensions.push(githubDark);
-    } else {
-      extensions.push(githubLight);
-    }
 
     const state = EditorState.create({
       doc: input,

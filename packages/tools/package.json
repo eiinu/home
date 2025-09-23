@@ -33,8 +33,7 @@
     "@codemirror/lang-json": "^6.0.2",
     "@codemirror/language": "^6.11.3",
     "@codemirror/state": "^6.5.2",
-    "@codemirror/view": "^6.38.3",
-    "@uiw/codemirror-theme-github": "^4.25.2"
+    "@codemirror/view": "^6.38.3"
   },
   "devDependencies": {
     "@eslint/js": "^9.36.0",

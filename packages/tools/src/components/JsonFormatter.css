@@ -224,6 +224,39 @@
   background-color: #b3d4fc;
 }
 
+/* JSON 语法高亮 - 浅色主题 */
+.json-formatter[data-theme="light"] .cm-editor .tok-string {
+  color: #032f62;
+}
+
+.json-formatter[data-theme="light"] .cm-editor .tok-number {
+  color: #005cc5;
+}
+
+.json-formatter[data-theme="light"] .cm-editor .tok-atom {
+  color: #e36209;
+}
+
+.json-formatter[data-theme="light"] .cm-editor .tok-keyword {
+  color: #d73a49;
+}
+
+.json-formatter[data-theme="light"] .cm-editor .tok-propertyName {
+  color: #6f42c1;
+}
+
+.json-formatter[data-theme="light"] .cm-editor .tok-punctuation {
+  color: #24292e;
+}
+
+.json-formatter[data-theme="light"] .cm-editor .tok-bracket {
+  color: #24292e;
+}
+
+.json-formatter[data-theme="light"] .cm-editor .tok-brace {
+  color: #24292e;
+}
+
 /* 折叠相关样式 */
 .cm-foldGutter .cm-gutterElement {
   text-align: center;

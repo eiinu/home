@@ -1,5 +1,6 @@
 import React, { useState, useCallback } from 'react';
 import './SseParser.css';
+import { Button } from './Button';
 
 interface SseParserProps {
   className?: string;
@@ -227,29 +228,32 @@ export const SseParser: React.FC<SseParserProps> = ({ className = '' }) => {
           <h3>SSE 事件流解析器</h3>
         </div>
         <div className="toolbar-right">
-          <button 
-            className="toolbar-button primary" 
+          <Button 
+            variant="primary"
+            size="small"
             onClick={handleParse}
             disabled={!input.trim()}
             title="解析 SSE 数据"
           >
             解析
-          </button>
-          <button 
-            className="toolbar-button" 
+          </Button>
+          <Button 
+            variant="default"
+            size="small"
             onClick={handleClear}
             title="清空所有内容"
           >
             清空
-          </button>
-          <button 
-            className="toolbar-button" 
+          </Button>
+          <Button 
+            variant="default"
+            size="small"
             onClick={handleCopyResult}
             disabled={!result}
             title="复制结果"
           >
             复制结果
-          </button>
+          </Button>
         </div>
       </div>
 

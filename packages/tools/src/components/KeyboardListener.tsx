@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import './KeyboardListener.css';
+import { Button } from './Button';
 
 interface KeyboardListenerProps {
   className?: string;
@@ -166,27 +167,31 @@ export const KeyboardListener: React.FC<KeyboardListenerProps> = ({ className = 
           <h3>键盘事件监听器</h3>
         </div>
         <div className="toolbar-right">
-          <button 
-            className={`toolbar-button ${isListening ? 'active' : 'primary'}`}
+          <Button 
+            variant={isListening ? 'warning' : 'primary'}
+            size="small"
+            active={isListening}
             onClick={toggleListening}
             title={isListening ? '停止监听' : '开始监听'}
           >
             {isListening ? '停止监听' : '开始监听'}
-          </button>
-          <button 
-            className="toolbar-button" 
+          </Button>
+          <Button 
+            variant="default"
+            size="small"
             onClick={() => setShowHistory(!showHistory)}
             title="切换历史记录显示"
           >
             {showHistory ? '隐藏历史' : '显示历史'}
-          </button>
-          <button 
-            className="toolbar-button" 
+          </Button>
+          <Button 
+            variant="default"
+            size="small"
             onClick={clearHistory}
             title="清空历史记录"
           >
             清空
-          </button>
+          </Button>
         </div>
       </div>
 

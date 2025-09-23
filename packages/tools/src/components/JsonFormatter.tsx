@@ -8,6 +8,7 @@ import { defaultKeymap, history, historyKeymap } from '@codemirror/commands';
 import { keymap } from '@codemirror/view';
 import './JsonFormatter.css';
 import { useToast } from './Toast';
+import { Button } from './Button';
 
 interface JsonFormatterProps {
   theme?: 'light' | 'dark' | 'auto';
@@ -198,15 +199,15 @@ const JsonFormatter: React.FC<JsonFormatterProps> = ({ theme = 'auto' }) => {
     <div className="json-formatter" data-theme={isDarkMode ? 'dark' : 'light'}>
       <div className="toolbar">
         <div className="toolbar-left">
-          <button className="btn" onClick={formatJson}>
-            ✨ 格式化
-          </button>
-          <button className="btn" onClick={minifyJson}>
-            🗜️ 压缩
-          </button>
-          <button className="btn" onClick={clearEditor}>
-            🗑️ 清空
-          </button>
+          <Button variant="primary" size="medium" onClick={formatJson} icon="✨">
+            格式化
+          </Button>
+          <Button variant="secondary" size="medium" onClick={minifyJson} icon="🗜️">
+            压缩
+          </Button>
+          <Button variant="danger" size="medium" onClick={clearEditor} icon="🗑️">
+            清空
+          </Button>
         </div>
 
       </div>

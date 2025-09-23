@@ -2,7 +2,7 @@ import React, { useState, useMemo } from 'react'
 import './Workspace.css'
 import Dock from './Dock'
 import { useTheme } from './ThemeProvider'
-import { JsonFormatter, SseParser, KeyboardListener, ClipboardManager } from '@eiinu/tools'
+import { JsonFormatter, SseParser, KeyboardListener, ClipboardManager, Button } from '@eiinu/tools'
 import './Workspace.css'
 
 const Workspace: React.FC = () => {
@@ -63,13 +63,13 @@ const Workspace: React.FC = () => {
             {dockItems.find(item => item.id === activeApp)?.label || '工作台'}
           </h1>
           <div className="workspace-actions">
-            <button 
-              className="action-button" 
+            <Button 
+              variant="default"
+              size="small"
               title={`当前主题: ${isDark ? '深色' : '浅色'}`}
               onClick={() => setTheme(isDark ? 'light' : 'dark')}
-            >
-              {isDark ? '☀️' : '🌙'}
-            </button>
+              icon={isDark ? '☀️' : '🌙'}
+            />
           </div>
         </div>
         <div className="workspace-main">
@@ -93,24 +93,33 @@ const Workspace: React.FC = () => {
                 <div className="setting-group">
                   <label>主题设置</label>
                   <div className="theme-selector">
-                    <button
-                      className={`theme-option ${theme === 'light' ? 'active' : ''}`}
+                    <Button
+                      variant="default"
+                      size="small"
+                      active={theme === 'light'}
                       onClick={() => handleThemeChange('light')}
+                      icon="☀️"
                     >
-                      ☀️ 浅色
-                    </button>
-                    <button
-                      className={`theme-option ${theme === 'dark' ? 'active' : ''}`}
+                      浅色
+                    </Button>
+                    <Button
+                      variant="default"
+                      size="small"
+                      active={theme === 'dark'}
                       onClick={() => handleThemeChange('dark')}
+                      icon="🌙"
                     >
-                      🌙 深色
-                    </button>
-                    <button
-                      className={`theme-option ${theme === 'auto' ? 'active' : ''}`}
+                      深色
+                    </Button>
+                    <Button
+                      variant="default"
+                      size="small"
+                      active={theme === 'auto'}
                       onClick={() => handleThemeChange('auto')}
+                      icon="🔄"
                     >
-                      🔄 自动
-                    </button>
+                      自动
+                    </Button>
                   </div>
                 </div>
               </div>

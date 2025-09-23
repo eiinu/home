@@ -2,7 +2,7 @@ import React, { useState, useMemo } from 'react'
 import './Workspace.css'
 import Dock from './Dock'
 import { useTheme } from './ThemeProvider'
-import { JsonFormatter, SseParser, KeyboardListener } from '@eiinu/tools'
+import { JsonFormatter, SseParser, KeyboardListener, ClipboardManager } from '@eiinu/tools'
 import './Workspace.css'
 
 const Workspace: React.FC = () => {
@@ -13,7 +13,8 @@ const Workspace: React.FC = () => {
   const componentInstances = useMemo(() => ({
     jsonFormatter: <JsonFormatter />,
     sseParser: <SseParser />,
-    keyboardListener: <KeyboardListener />
+    keyboardListener: <KeyboardListener />,
+    clipboardManager: <ClipboardManager />
   }), [])
 
   const dockItems = [
@@ -32,6 +33,11 @@ const Workspace: React.FC = () => {
       id: 'keyboard-listener',
       icon: '⌨️',
       label: '键盘监听器'
+    },
+    {
+      id: 'clipboard-manager',
+      icon: '📋',
+      label: '剪贴板管理'
     },
     {
       id: 'settings',
@@ -85,6 +91,9 @@ const Workspace: React.FC = () => {
           <div style={{ display: activeApp === 'keyboard-listener' ? 'block' : 'none' }}>
             {componentInstances.keyboardListener}
           </div>
+          <div style={{ display: activeApp === 'clipboard-manager' ? 'block' : 'none' }}>
+            {componentInstances.clipboardManager}
+          </div>
           {activeApp === 'settings' && (
             <div className="app-placeholder">
               <div className="placeholder-icon">⚙️</div>
@@ -116,7 +125,7 @@ const Workspace: React.FC = () => {
               </div>
             </div>
           )}
-          {!['json-formatter', 'sse-parser', 'keyboard-listener', 'settings'].includes(activeApp) && (
+          {!['json-formatter', 'sse-parser', 'keyboard-listener', 'clipboard-manager', 'settings'].includes(activeApp) && (
             <div className="app-placeholder">
               <div className="placeholder-icon">🔧</div>
               <h2>工具</h2>

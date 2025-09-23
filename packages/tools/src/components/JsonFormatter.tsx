@@ -8,6 +8,7 @@ import { lineNumbers } from '@codemirror/view';
 import { defaultKeymap, history, historyKeymap } from '@codemirror/commands';
 import { keymap } from '@codemirror/view';
 import './JsonFormatter.css';
+import { useToast } from './Toast';
 
 interface JsonFormatterProps {
   theme?: 'light' | 'dark' | 'auto';
@@ -27,6 +28,7 @@ const JsonFormatter: React.FC<JsonFormatterProps> = ({ theme = 'auto' }) => {
     // 回退到系统主题
     return window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
   });
+  const { showError, ToastContainer } = useToast();
   const editorRef = useRef<HTMLDivElement>(null);
   const viewRef = useRef<EditorView | null>(null);
 
@@ -159,7 +161,7 @@ const JsonFormatter: React.FC<JsonFormatterProps> = ({ theme = 'auto' }) => {
       const formatted = JSON.stringify(parsed, null, 2);
       setInput(formatted);
     } catch {
-      alert('Invalid JSON format');
+      showError('Invalid JSON format');
     }
   };
 
@@ -169,7 +171,7 @@ const JsonFormatter: React.FC<JsonFormatterProps> = ({ theme = 'auto' }) => {
       const minified = JSON.stringify(parsed);
       setInput(minified);
     } catch {
-      alert('Invalid JSON format');
+      showError('Invalid JSON format');
     }
   };
 
@@ -207,6 +209,7 @@ const JsonFormatter: React.FC<JsonFormatterProps> = ({ theme = 'auto' }) => {
       <div className="status-bar">
         <span>JSON 格式化工具 | 自动跟随应用主题</span>
       </div>
+      <ToastContainer />
     </div>
   );
 };

@@ -1,0 +1,148 @@
+/* Toast 主题变量 */
+:root[data-theme="light"] {
+  --toast-bg-success: #d4edda;
+  --toast-bg-error: #f8d7da;
+  --toast-bg-warning: #fff3cd;
+  --toast-bg-info: #d1ecf1;
+  --toast-text-success: #155724;
+  --toast-text-error: #721c24;
+  --toast-text-warning: #856404;
+  --toast-text-info: #0c5460;
+  --toast-border-success: #c3e6cb;
+  --toast-border-error: #f5c6cb;
+  --toast-border-warning: #ffeaa7;
+  --toast-border-info: #bee5eb;
+  --toast-shadow: rgba(0, 0, 0, 0.1);
+}
+
+:root[data-theme="dark"] {
+  --toast-bg-success: #1e3a2e;
+  --toast-bg-error: #3a1e1e;
+  --toast-bg-warning: #3a3a1e;
+  --toast-bg-info: #1e2a3a;
+  --toast-text-success: #4ade80;
+  --toast-text-error: #f87171;
+  --toast-text-warning: #fbbf24;
+  --toast-text-info: #60a5fa;
+  --toast-border-success: #22c55e;
+  --toast-border-error: #ef4444;
+  --toast-border-warning: #f59e0b;
+  --toast-border-info: #3b82f6;
+  --toast-shadow: rgba(0, 0, 0, 0.3);
+}
+
+.toast-container {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  z-index: 9999;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  pointer-events: none;
+}
+
+.toast {
+  min-width: 300px;
+  max-width: 500px;
+  padding: 0;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px var(--toast-shadow);
+  transform: translateX(100%);
+  opacity: 0;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  pointer-events: auto;
+  border: 1px solid;
+}
+
+.toast-visible {
+  transform: translateX(0);
+  opacity: 1;
+}
+
+.toast-success {
+  background-color: var(--toast-bg-success);
+  color: var(--toast-text-success);
+  border-color: var(--toast-border-success);
+}
+
+.toast-error {
+  background-color: var(--toast-bg-error);
+  color: var(--toast-text-error);
+  border-color: var(--toast-border-error);
+}
+
+.toast-warning {
+  background-color: var(--toast-bg-warning);
+  color: var(--toast-text-warning);
+  border-color: var(--toast-border-warning);
+}
+
+.toast-info {
+  background-color: var(--toast-bg-info);
+  color: var(--toast-text-info);
+  border-color: var(--toast-border-info);
+}
+
+.toast-content {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 16px;
+  gap: 12px;
+}
+
+.toast-message {
+  flex: 1;
+  font-size: 14px;
+  line-height: 1.4;
+  word-break: break-word;
+}
+
+.toast-close {
+  background: none;
+  border: none;
+  color: inherit;
+  font-size: 20px;
+  font-weight: bold;
+  cursor: pointer;
+  padding: 0;
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 4px;
+  transition: background-color 0.2s ease;
+  flex-shrink: 0;
+}
+
+.toast-close:hover {
+  background-color: rgba(0, 0, 0, 0.1);
+}
+
+.toast-close:focus {
+  outline: 2px solid currentColor;
+  outline-offset: 2px;
+}
+
+/* 响应式设计 */
+@media (max-width: 768px) {
+  .toast-container {
+    top: 10px;
+    right: 10px;
+    left: 10px;
+  }
+  
+  .toast {
+    min-width: auto;
+    max-width: none;
+  }
+}
+
+/* 动画优化 */
+@media (prefers-reduced-motion: reduce) {
+  .toast {
+    transition: none;
+  }
+}

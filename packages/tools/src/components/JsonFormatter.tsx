@@ -208,21 +208,10 @@ const JsonFormatter: React.FC<JsonFormatterProps> = ({ theme = 'auto' }) => {
             🗑️ 清空
           </button>
         </div>
-        <div className="toolbar-right">
-          <div className="theme-info">
-            <span className="theme-icon">{isDarkMode ? '🌙' : '☀️'}</span>
-            <span className="theme-text">
-              {theme === 'auto' ? `跟随应用 (${isDarkMode ? '深色' : '浅色'})` : 
-               theme === 'dark' ? '深色模式' : '浅色模式'}
-            </span>
-          </div>
-        </div>
+
       </div>
       <div className="editor-container">
         <div ref={editorRef} className="editor" />
-      </div>
-      <div className="status-bar">
-        <span>JSON 格式化工具 | 自动跟随应用主题</span>
       </div>
       <ToastContainer />
     </div>

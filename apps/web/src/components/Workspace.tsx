@@ -63,21 +63,12 @@ const Workspace: React.FC = () => {
             {dockItems.find(item => item.id === activeApp)?.label || '工作台'}
           </h1>
           <div className="workspace-actions">
-            <button className="action-button" title="搜索">
-              🔍
-            </button>
-            <button className="action-button" title="帮助">
-              ❓
-            </button>
             <button 
               className="action-button" 
               title={`当前主题: ${isDark ? '深色' : '浅色'}`}
               onClick={() => setTheme(isDark ? 'light' : 'dark')}
             >
               {isDark ? '☀️' : '🌙'}
-            </button>
-            <button className="action-button" title="用户菜单">
-              👤
             </button>
           </div>
         </div>

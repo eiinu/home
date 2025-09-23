@@ -2,7 +2,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import { EditorView } from '@codemirror/view';
 import { EditorState } from '@codemirror/state';
 import { json } from '@codemirror/lang-json';
-import { oneDark } from '@codemirror/theme-one-dark';
+import { githubLight, githubDark } from '@uiw/codemirror-theme-github';
 import { foldGutter } from '@codemirror/language';
 import { lineNumbers } from '@codemirror/view';
 import { defaultKeymap, history, historyKeymap } from '@codemirror/commands';
@@ -93,6 +93,20 @@ const JsonFormatter: React.FC<JsonFormatterProps> = ({ theme = 'auto' }) => {
       history(),
       keymap.of([...defaultKeymap, ...historyKeymap]),
       json(),
+      EditorView.theme({
+        '&': {
+          fontSize: '14px',
+        },
+        '.cm-content': {
+          padding: '10px',
+        },
+        '.cm-focused .cm-cursor': {
+          borderLeftColor: isDarkMode ? '#528bff' : '#0969da',
+        },
+        '.cm-focused .cm-selectionBackground, ::selection': {
+          backgroundColor: isDarkMode ? '#3392FF44' : '#0969da44',
+        },
+      }),
       EditorState.transactionFilter.of((tr) => {
         if (tr.docChanged) {
           const newContent = tr.newDoc.toString();
@@ -103,7 +117,9 @@ const JsonFormatter: React.FC<JsonFormatterProps> = ({ theme = 'auto' }) => {
     ];
 
     if (isDarkMode) {
-      extensions.push(oneDark);
+      extensions.push(githubDark);
+    } else {
+      extensions.push(githubLight);
     }
 
     const state = EditorState.create({

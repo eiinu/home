@@ -1,18 +1,20 @@
-import React, { useState } from 'react'
+import React, { useState, useMemo } from 'react'
 import './Workspace.css'
 import Dock from './Dock'
 import { useTheme } from './ThemeProvider'
+import { JsonFormatter, SseParser, KeyboardListener } from '@eiinu/tools'
 import './Workspace.css'
 
-interface WorkspaceProps {
-  jsonFormatter?: React.ReactNode
-  sseParser?: React.ReactNode
-  keyboardListener?: React.ReactNode
-}
-
-const Workspace: React.FC<WorkspaceProps> = ({ jsonFormatter, sseParser, keyboardListener }) => {
+const Workspace: React.FC = () => {
   const [activeApp, setActiveApp] = useState('json-formatter')
   const { theme, setTheme, isDark } = useTheme()
+
+  // 使用 useMemo 来保持组件实例，避免重新创建
+  const componentInstances = useMemo(() => ({
+    jsonFormatter: <JsonFormatter />,
+    sseParser: <SseParser />,
+    keyboardListener: <KeyboardListener />
+  }), [])
 
   const dockItems = [
     {
@@ -46,57 +48,6 @@ const Workspace: React.FC<WorkspaceProps> = ({ jsonFormatter, sseParser, keyboar
     setTheme(newTheme)
   }
 
-  const renderAppContent = () => {
-    switch (activeApp) {
-      case 'json-formatter':
-        return jsonFormatter
-      case 'sse-parser':
-        return sseParser
-      case 'keyboard-listener':
-        return keyboardListener
-      case 'settings':
-        return (
-          <div className="app-placeholder">
-            <div className="placeholder-icon">⚙️</div>
-            <h2>设置</h2>
-            <div className="settings-panel">
-              <div className="setting-group">
-                <label>主题设置</label>
-                <div className="theme-selector">
-                  <button
-                    className={`theme-option ${theme === 'light' ? 'active' : ''}`}
-                    onClick={() => handleThemeChange('light')}
-                  >
-                    ☀️ 浅色
-                  </button>
-                  <button
-                    className={`theme-option ${theme === 'dark' ? 'active' : ''}`}
-                    onClick={() => handleThemeChange('dark')}
-                  >
-                    🌙 深色
-                  </button>
-                  <button
-                    className={`theme-option ${theme === 'auto' ? 'active' : ''}`}
-                    onClick={() => handleThemeChange('auto')}
-                  >
-                    🔄 自动
-                  </button>
-                </div>
-              </div>
-            </div>
-          </div>
-        )
-      default:
-        return (
-          <div className="app-placeholder">
-            <div className="placeholder-icon">🔧</div>
-            <h2>工具</h2>
-            <p>选择左侧的工具开始使用</p>
-          </div>
-        )
-    }
-  }
-
   return (
     <div className="workspace">
       <Dock items={dockItems} onItemClick={handleDockItemClick} />
@@ -125,7 +76,53 @@ const Workspace: React.FC<WorkspaceProps> = ({ jsonFormatter, sseParser, keyboar
           </div>
         </div>
         <div className="workspace-main">
-          {renderAppContent()}
+          <div style={{ display: activeApp === 'json-formatter' ? 'block' : 'none' }}>
+            {componentInstances.jsonFormatter}
+          </div>
+          <div style={{ display: activeApp === 'sse-parser' ? 'block' : 'none' }}>
+            {componentInstances.sseParser}
+          </div>
+          <div style={{ display: activeApp === 'keyboard-listener' ? 'block' : 'none' }}>
+            {componentInstances.keyboardListener}
+          </div>
+          {activeApp === 'settings' && (
+            <div className="app-placeholder">
+              <div className="placeholder-icon">⚙️</div>
+              <h2>设置</h2>
+              <div className="settings-panel">
+                <div className="setting-group">
+                  <label>主题设置</label>
+                  <div className="theme-selector">
+                    <button
+                      className={`theme-option ${theme === 'light' ? 'active' : ''}`}
+                      onClick={() => handleThemeChange('light')}
+                    >
+                      ☀️ 浅色
+                    </button>
+                    <button
+                      className={`theme-option ${theme === 'dark' ? 'active' : ''}`}
+                      onClick={() => handleThemeChange('dark')}
+                    >
+                      🌙 深色
+                    </button>
+                    <button
+                      className={`theme-option ${theme === 'auto' ? 'active' : ''}`}
+                      onClick={() => handleThemeChange('auto')}
+                    >
+                      🔄 自动
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+          {!['json-formatter', 'sse-parser', 'keyboard-listener', 'settings'].includes(activeApp) && (
+            <div className="app-placeholder">
+              <div className="placeholder-icon">🔧</div>
+              <h2>工具</h2>
+              <p>选择左侧的工具开始使用</p>
+            </div>
+          )}
         </div>
       </main>
     </div>

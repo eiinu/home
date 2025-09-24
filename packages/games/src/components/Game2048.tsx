@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import './Game2048.css';
 
 interface Tile {
@@ -21,6 +21,10 @@ const Game2048: React.FC<Game2048Props> = ({ theme = 'auto' }) => {
   const [gameOver, setGameOver] = useState(false);
   const [gameWon, setGameWon] = useState(false);
   const [tileIdCounter, setTileIdCounter] = useState(0);
+  
+  // 触摸事件相关状态
+  const touchStartRef = useRef<{ x: number; y: number } | null>(null);
+  const gameContainerRef = useRef<HTMLDivElement>(null);
 
   // 主题检测
   const [isDarkMode, setIsDarkMode] = useState(false);
@@ -162,7 +166,7 @@ const Game2048: React.FC<Game2048Props> = ({ theme = 'auto' }) => {
     // 根据方向处理移动
     if (direction === 'left' || direction === 'right') {
       for (let row = 0; row < 4; row++) {
-        let rowTiles = [...newBoard[row]];
+        const rowTiles = [...newBoard[row]];
         if (direction === 'right') {
           rowTiles.reverse();
         }
@@ -183,7 +187,7 @@ const Game2048: React.FC<Game2048Props> = ({ theme = 'auto' }) => {
       }
     } else {
       for (let col = 0; col < 4; col++) {
-        let colTiles = [];
+        const colTiles = [];
         for (let row = 0; row < 4; row++) {
           colTiles.push(newBoard[row][col]);
         }
@@ -283,6 +287,62 @@ const Game2048: React.FC<Game2048Props> = ({ theme = 'auto' }) => {
     return () => window.removeEventListener('keydown', handleKeyPress);
   }, [move]);
 
+  // 触摸事件处理
+  const handleTouchStart = useCallback((e: React.TouchEvent) => {
+    if (e.touches.length === 1) {
+      const touch = e.touches[0];
+      touchStartRef.current = { x: touch.clientX, y: touch.clientY };
+      // 防止浏览器默认行为
+      e.preventDefault();
+    }
+  }, []);
+
+  const handleTouchEnd = useCallback((e: React.TouchEvent) => {
+    if (!touchStartRef.current || e.changedTouches.length !== 1) {
+      return;
+    }
+
+    const touch = e.changedTouches[0];
+    const deltaX = touch.clientX - touchStartRef.current.x;
+    const deltaY = touch.clientY - touchStartRef.current.y;
+    
+    // 最小滑动距离阈值
+    const minSwipeDistance = 30;
+    
+    if (Math.abs(deltaX) < minSwipeDistance && Math.abs(deltaY) < minSwipeDistance) {
+      return;
+    }
+
+    // 防止页面滚动和刷新
+    e.preventDefault();
+    e.stopPropagation();
+
+    // 判断滑动方向
+    if (Math.abs(deltaX) > Math.abs(deltaY)) {
+      // 水平滑动
+      if (deltaX > 0) {
+        move('right');
+      } else {
+        move('left');
+      }
+    } else {
+      // 垂直滑动
+      if (deltaY > 0) {
+        move('down');
+      } else {
+        move('up');
+      }
+    }
+
+    touchStartRef.current = null;
+  }, [move]);
+
+  const handleTouchMove = useCallback((e: React.TouchEvent) => {
+    // 防止页面滚动和下拉刷新
+    e.preventDefault();
+    e.stopPropagation();
+  }, []);
+
   // 初始化游戏
   useEffect(() => {
     initGame();
@@ -341,12 +401,19 @@ const Game2048: React.FC<Game2048Props> = ({ theme = 'auto' }) => {
 
       <div className="game-info">
         <p>使用方向键移动方块，相同数字的方块会合并！</p>
+        <p className="mobile-hint">在移动设备上可以滑动屏幕来控制</p>
         <button className="new-game-btn" onClick={initGame}>
           新游戏
         </button>
       </div>
 
-      <div className="game-container">
+      <div 
+        className="game-container"
+        ref={gameContainerRef}
+        onTouchStart={handleTouchStart}
+        onTouchEnd={handleTouchEnd}
+        onTouchMove={handleTouchMove}
+      >
         <div className="grid-container">
           {Array(16).fill(null).map((_, index) => (
             <div key={index} className="grid-cell" />
@@ -354,19 +421,65 @@ const Game2048: React.FC<Game2048Props> = ({ theme = 'auto' }) => {
         </div>
         
         <div className="tile-container">
-          {board.flat().filter(tile => tile !== null).map(tile => (
-            <div
-              key={tile!.id}
-              className={`tile tile-${tile!.value} ${tile!.isNew ? 'tile-new' : ''} ${tile!.isMerged ? 'tile-merged' : ''}`}
-              style={{
-                transform: `translate(${tile!.col * 78}px, ${tile!.row * 78}px)`,
-                backgroundColor: getTileColor(tile!.value),
-                color: getTextColor(tile!.value)
-              }}
-            >
-              {tile!.value}
-            </div>
-          ))}
+          {board.flat().filter(tile => tile !== null).map(tile => {
+            // 根据屏幕尺寸动态计算方块位置
+            const getPositionForTile = (row: number, col: number) => {
+              // 获取当前屏幕宽度
+              const screenWidth = window.innerWidth;
+              
+              // 根据屏幕宽度设置对应的尺寸参数，与CSS媒体查询保持一致
+              let cellSize: number;
+              let gap: number;
+              let containerPadding: number;
+              
+              if (screenWidth <= 360) {
+              // 对应 @media (max-width: 360px)
+              cellSize = 50;  // .tile width/height
+              gap = 6;        // .grid-container gap
+              containerPadding = 8;  // .game-container padding
+              } else if (screenWidth <= 480) {
+              // 对应 @media (max-width: 480px)
+              cellSize = 58;  // .tile width/height
+              gap = 8;        // .grid-container gap
+              containerPadding = 10; // .game-container padding
+              } else {
+              // 桌面端默认值
+              cellSize = 107; // .tile width/height
+              gap = 15;       // .grid-container gap
+              containerPadding = 15; // .game-container padding
+              }
+              
+              // 计算位置：容器内边距 + (格子大小 + 间隙) * 索引
+              const left = containerPadding + (cellSize + gap) * col;
+              const top = containerPadding + (cellSize + gap) * row;
+              
+              return {
+                left: `${left}px`,
+                top: `${top}px`,
+                width: `${cellSize}px`,
+                height: `${cellSize}px`,
+                position: 'absolute' as const,
+                zIndex: 10,
+                'data-debug': `${screenWidth}px-${cellSize}x${cellSize}-gap${gap}-pad${containerPadding}-pos(${left},${top})`
+              };
+            };
+              
+            const positionStyle = getPositionForTile(tile!.row, tile!.col);
+            
+            return (
+              <div
+                key={tile!.id}
+                className={`tile tile-${tile!.value} ${tile!.isNew ? 'tile-new' : ''} ${tile!.isMerged ? 'tile-merged' : ''}`}
+                style={{
+                  ...positionStyle,
+                  backgroundColor: getTileColor(tile!.value),
+                  color: getTextColor(tile!.value)
+                }}
+              >
+                {tile!.value}
+              </div>
+            );
+          })}
         </div>
       </div>
 

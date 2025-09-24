@@ -87,6 +87,116 @@
   color: var(--text-color);
 }
 
+.mobile-hint {
+  display: none;
+  font-size: 12px !important;
+  opacity: 0.8;
+}
+
+@media (max-width: 768px) {
+  .mobile-hint {
+    display: block;
+    text-align: center;
+    margin: 10px 0;
+    font-size: 14px;
+    color: var(--text-color);
+    opacity: 0.7;
+  }
+}
+
+@media (max-width: 480px) {
+  .game-2048 {
+    padding: 10px;
+    width: 100%;
+    max-width: 320px;
+    margin: 0 auto;
+  }
+  
+  .game-header {
+    flex-direction: column;
+    gap: 15px;
+    text-align: center;
+  }
+  
+  .game-header h1 {
+    font-size: 36px;
+  }
+  
+  .game-container {
+    width: 280px;
+    height: 280px;
+    padding: 10px;
+    margin: 0 auto;
+  }
+  
+  .grid-container,
+  .tile-container {
+    width: 260px;
+    height: 260px;
+    top: 10px;
+    left: 10px;
+  }
+  
+  .grid-container {
+    gap: 8px;
+  }
+  
+  .tile {
+    width: 58px;
+    height: 58px;
+    font-size: 24px;
+  }
+  
+  .tile-16,
+  .tile-32,
+  .tile-64 { font-size: 22px; }
+  .tile-128,
+  .tile-256,
+  .tile-512 { font-size: 20px; }
+  .tile-1024,
+  .tile-2048 { font-size: 18px; }
+}
+
+@media (max-width: 360px) {
+  .game-2048 {
+    padding: 8px;
+    max-width: 280px;
+  }
+  
+  .game-container {
+    width: 240px;
+    height: 240px;
+    padding: 8px;
+  }
+  
+  .grid-container,
+  .tile-container {
+    width: 224px;
+    height: 224px;
+    top: 8px;
+    left: 8px;
+  }
+  
+  .grid-container {
+    gap: 6px;
+  }
+  
+  .tile {
+    width: 50px;
+    height: 50px;
+    font-size: 20px;
+  }
+  
+  .tile-16,
+  .tile-32,
+  .tile-64 { font-size: 18px; }
+  .tile-128,
+  .tile-256,
+  .tile-512 { font-size: 16px; }
+  .tile-1024,
+  .tile-2048 { font-size: 14px; }
+}
+
 .new-game-btn {
   background-color: var(--button-bg);
   color: var(--button-text);
@@ -111,6 +221,17 @@
   border-radius: 10px;
   padding: 15px;
   box-sizing: border-box;
+  /* 防止移动端下拉刷新和滚动 */
+  touch-action: none;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  /* 防止iOS Safari的弹性滚动 */
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior: none;
 }
 
 .grid-container {
@@ -242,54 +363,4 @@
 
 .game-message button:hover {
   opacity: 0.8;
-}
-
-/* 移动端适配 */
-@media (max-width: 480px) {
-  .game-2048 {
-    padding: 10px;
-  }
-  
-  .game-header {
-    flex-direction: column;
-    gap: 15px;
-    text-align: center;
-  }
-  
-  .game-header h1 {
-    font-size: 36px;
-  }
-  
-  .game-container {
-    width: 280px;
-    height: 280px;
-    padding: 10px;
-  }
-  
-  .grid-container,
-  .tile-container {
-    width: 260px;
-    height: 260px;
-    top: 10px;
-    left: 10px;
-  }
-  
-  .grid-container {
-    gap: 8px;
-  }
-  
-  .tile {
-    width: 58px;
-    height: 58px;
-    font-size: 24px;
-  }
-  
-  .tile-16,
-  .tile-32,
-  .tile-64 { font-size: 22px; }
-  .tile-128,
-  .tile-256,
-  .tile-512 { font-size: 20px; }
-  .tile-1024,
-  .tile-2048 { font-size: 18px; }
 }

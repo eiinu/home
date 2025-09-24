@@ -30,6 +30,7 @@
     "@codemirror/commands": "^6.8.1",
     "@codemirror/fold": "^0.19.4",
     "@codemirror/gutter": "^0.19.9",
+    "@codemirror/lang-html": "^6.4.9",
     "@codemirror/lang-json": "^6.0.2",
     "@codemirror/language": "^6.11.3",
     "@codemirror/state": "^6.5.2",

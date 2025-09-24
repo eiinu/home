@@ -1,0 +1,119 @@
+.html-formatter {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 24px;
+  max-width: 1200px;
+  margin: 0 auto;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+}
+
+.html-formatter-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.html-formatter-header h2 {
+  margin: 0;
+  font-size: 24px;
+  font-weight: 600;
+  color: var(--text-primary, #1f2937);
+}
+
+.html-formatter.dark .html-formatter-header h2 {
+  color: var(--text-primary-dark, #f9fafb);
+}
+
+.html-formatter-actions {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.html-formatter-editor {
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+}
+
+.html-formatter.dark .html-formatter-editor {
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.3), 0 1px 2px 0 rgba(0, 0, 0, 0.2);
+}
+
+.html-formatter-info {
+  display: flex;
+  gap: 24px;
+  font-size: 14px;
+  color: var(--text-secondary, #6b7280);
+  padding: 8px 0;
+}
+
+.html-formatter.dark .html-formatter-info {
+  color: var(--text-secondary-dark, #9ca3af);
+}
+
+.html-formatter-info span {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+/* 响应式设计 */
+@media (max-width: 768px) {
+  .html-formatter {
+    padding: 16px;
+  }
+  
+  .html-formatter-header {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  
+  .html-formatter-actions {
+    justify-content: center;
+  }
+  
+  .html-formatter-info {
+    justify-content: center;
+    gap: 16px;
+  }
+}
+
+/* 编辑器主题适配 */
+.html-formatter.light {
+  background-color: var(--bg-primary, #ffffff);
+}
+
+.html-formatter.dark {
+  background-color: var(--bg-primary-dark, #111827);
+}
+
+/* 滚动条样式 */
+.html-formatter-editor ::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+.html-formatter-editor ::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.html-formatter-editor ::-webkit-scrollbar-thumb {
+  background-color: rgba(156, 163, 175, 0.5);
+  border-radius: 4px;
+}
+
+.html-formatter.dark .html-formatter-editor ::-webkit-scrollbar-thumb {
+  background-color: rgba(75, 85, 99, 0.5);
+}
+
+.html-formatter-editor ::-webkit-scrollbar-thumb:hover {
+  background-color: rgba(156, 163, 175, 0.8);
+}
+
+.html-formatter.dark .html-formatter-editor ::-webkit-scrollbar-thumb:hover {
+  background-color: rgba(75, 85, 99, 0.8);
+}

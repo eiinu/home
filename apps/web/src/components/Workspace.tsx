@@ -2,7 +2,7 @@ import React, { useState, useMemo } from 'react'
 import './Workspace.css'
 import Dock from './Dock'
 import { useTheme } from './ThemeProvider'
-import { JsonFormatter, SseParser, KeyboardListener, ClipboardManager, Button } from '@eiinu/tools'
+import { JsonFormatter, HtmlFormatter, SseParser, KeyboardListener, ClipboardManager, Button } from '@eiinu/tools'
 import './Workspace.css'
 
 const Workspace: React.FC = () => {
@@ -12,6 +12,7 @@ const Workspace: React.FC = () => {
   // 使用 useMemo 来保持组件实例，避免重新创建
   const componentInstances = useMemo(() => ({
     jsonFormatter: <JsonFormatter />,
+    htmlFormatter: <HtmlFormatter />,
     sseParser: <SseParser />,
     keyboardListener: <KeyboardListener />,
     clipboardManager: <ClipboardManager />
@@ -23,6 +24,11 @@ const Workspace: React.FC = () => {
       icon: '{}',
       label: 'JSON 格式化',
       active: true
+    },
+    {
+      id: 'html-formatter',
+      icon: '</>',
+      label: 'HTML 工具'
     },
     {
       id: 'sse-parser',
@@ -76,6 +82,9 @@ const Workspace: React.FC = () => {
           <div style={{ display: activeApp === 'json-formatter' ? 'block' : 'none' }}>
             {componentInstances.jsonFormatter}
           </div>
+          <div style={{ display: activeApp === 'html-formatter' ? 'block' : 'none' }}>
+            {componentInstances.htmlFormatter}
+          </div>
           <div style={{ display: activeApp === 'sse-parser' ? 'block' : 'none' }}>
             {componentInstances.sseParser}
           </div>
@@ -125,7 +134,7 @@ const Workspace: React.FC = () => {
               </div>
             </div>
           )}
-          {!['json-formatter', 'sse-parser', 'keyboard-listener', 'clipboard-manager', 'settings'].includes(activeApp) && (
+          {!['json-formatter', 'html-formatter', 'sse-parser', 'keyboard-listener', 'clipboard-manager', 'settings'].includes(activeApp) && (
             <div className="app-placeholder">
               <div className="placeholder-icon">🔧</div>
               <h2>工具</h2>

@@ -99,7 +99,6 @@ const HtmlFormatter: React.FC<HtmlFormatterProps> = ({ theme = 'auto' }) => {
           },
           '.cm-content': {
             padding: '16px',
-            minHeight: '300px',
           },
           '.cm-focused': {
             outline: 'none',

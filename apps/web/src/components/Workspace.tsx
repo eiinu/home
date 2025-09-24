@@ -1,13 +1,14 @@
 import React, { useState, useMemo } from 'react'
 import './Workspace.css'
-import Dock from './Dock'
+import CategoryDock from './CategoryDock'
+import ToolsList from './ToolsList'
 import { useTheme } from './ThemeProvider'
 import { JsonFormatter, HtmlFormatter, SseParser, KeyboardListener, ClipboardManager, Button } from '@eiinu/tools'
-import './Workspace.css'
 
 const Workspace: React.FC = () => {
-  const [activeApp, setActiveApp] = useState('json-formatter')
-  const { theme, setTheme, isDark } = useTheme()
+  const [activeCategory, setActiveCategory] = useState('tools')
+  const [activeTool, setActiveTool] = useState('json-formatter')
+  const { theme, setTheme } = useTheme()
 
   // 使用 useMemo 来保持组件实例，避免重新创建
   const componentInstances = useMemo(() => ({
@@ -18,32 +19,12 @@ const Workspace: React.FC = () => {
     clipboardManager: <ClipboardManager />
   }), [])
 
-  const dockItems = [
+  // 主分类配置
+  const categories = [
     {
-      id: 'json-formatter',
-      icon: '{}',
-      label: 'JSON 格式化',
-      active: true
-    },
-    {
-      id: 'html-formatter',
-      icon: '</>',
-      label: 'HTML 工具'
-    },
-    {
-      id: 'sse-parser',
-      icon: '📡',
-      label: 'SSE 解析器'
-    },
-    {
-      id: 'keyboard-listener',
-      icon: '⌨️',
-      label: '键盘监听器'
-    },
-    {
-      id: 'clipboard-manager',
-      icon: '📋',
-      label: '剪贴板管理'
+      id: 'tools',
+      icon: '🛠️',
+      label: '工具'
     },
     {
       id: 'settings',
@@ -52,97 +33,148 @@ const Workspace: React.FC = () => {
     }
   ]
 
-  const handleDockItemClick = (id: string) => {
-    setActiveApp(id)
+  // 工具配置
+  const toolsConfig = {
+    tools: [
+      {
+        id: 'json-formatter',
+        icon: '{}',
+        label: 'JSON 工具',
+        description: 'JSON 格式化和验证'
+      },
+      {
+        id: 'html-formatter',
+        icon: '</>',
+        label: 'HTML 工具',
+        description: 'HTML 格式化和美化'
+      },
+      {
+        id: 'sse-parser',
+        icon: '📡',
+        label: 'SSE 解析器',
+        description: 'Server-Sent Events 解析'
+      },
+      {
+        id: 'keyboard-listener',
+        icon: '⌨️',
+        label: '键盘监听器',
+        description: '监听键盘事件'
+      },
+      {
+        id: 'clipboard-manager',
+        icon: '📋',
+        label: '剪贴板管理',
+        description: '剪贴板内容管理'
+      }
+    ],
+    settings: [
+      {
+        id: 'theme-settings',
+        icon: '🎨',
+        label: '主题设置',
+        description: '切换应用主题'
+      }
+    ]
   }
 
+  // 处理分类点击
+  const handleCategoryClick = (categoryId: string) => {
+    setActiveCategory(categoryId)
+    // 设置该分类下的第一个工具为活跃工具
+    const tools = toolsConfig[categoryId as keyof typeof toolsConfig] || []
+    if (tools.length > 0) {
+      setActiveTool(tools[0].id)
+    }
+  }
+
+  // 处理工具点击
+  const handleToolClick = (toolId: string) => {
+    setActiveTool(toolId)
+  }
+
+  // 处理主题变更
   const handleThemeChange = (newTheme: 'light' | 'dark' | 'auto') => {
     setTheme(newTheme)
   }
 
-  return (
-    <div className="workspace">
-      <Dock items={dockItems} onItemClick={handleDockItemClick} />
-      <main className="workspace-content">
-        <div className="workspace-header">
-          <h1 className="workspace-title">
-            {dockItems.find(item => item.id === activeApp)?.label || '工作台'}
-          </h1>
-          <div className="workspace-actions">
-            <Button 
-              variant="default"
-              size="small"
-              title={`当前主题: ${isDark ? '深色' : '浅色'}`}
-              onClick={() => setTheme(isDark ? 'light' : 'dark')}
-              icon={isDark ? '☀️' : '🌙'}
-            />
-          </div>
-        </div>
-        <div className="workspace-main">
-          <div style={{ display: activeApp === 'json-formatter' ? 'block' : 'none' }}>
-            {componentInstances.jsonFormatter}
-          </div>
-          <div style={{ display: activeApp === 'html-formatter' ? 'block' : 'none' }}>
-            {componentInstances.htmlFormatter}
-          </div>
-          <div style={{ display: activeApp === 'sse-parser' ? 'block' : 'none' }}>
-            {componentInstances.sseParser}
-          </div>
-          <div style={{ display: activeApp === 'keyboard-listener' ? 'block' : 'none' }}>
-            {componentInstances.keyboardListener}
-          </div>
-          <div style={{ display: activeApp === 'clipboard-manager' ? 'block' : 'none' }}>
-            {componentInstances.clipboardManager}
-          </div>
-          {activeApp === 'settings' && (
-            <div className="app-placeholder">
-              <div className="placeholder-icon">⚙️</div>
-              <h2>设置</h2>
-              <div className="settings-panel">
-                <div className="setting-group">
-                  <label>主题设置</label>
-                  <div className="theme-selector">
-                    <Button
-                      variant="default"
-                      size="small"
-                      active={theme === 'light'}
-                      onClick={() => handleThemeChange('light')}
-                      icon="☀️"
-                    >
-                      浅色
-                    </Button>
-                    <Button
-                      variant="default"
-                      size="small"
-                      active={theme === 'dark'}
-                      onClick={() => handleThemeChange('dark')}
-                      icon="🌙"
-                    >
-                      深色
-                    </Button>
-                    <Button
-                      variant="default"
-                      size="small"
-                      active={theme === 'auto'}
-                      onClick={() => handleThemeChange('auto')}
-                      icon="🔄"
-                    >
-                      自动
-                    </Button>
-                  </div>
-                </div>
+  // 获取当前分类的工具列表
+  const currentTools = toolsConfig[activeCategory as keyof typeof toolsConfig] || []
+
+  // 渲染工具内容
+  const renderToolContent = () => {
+    switch (activeTool) {
+      case 'json-formatter':
+        return componentInstances.jsonFormatter
+      case 'html-formatter':
+        return componentInstances.htmlFormatter
+      case 'sse-parser':
+        return componentInstances.sseParser
+      case 'keyboard-listener':
+        return componentInstances.keyboardListener
+      case 'clipboard-manager':
+        return componentInstances.clipboardManager
+      case 'theme-settings':
+        return (
+          <div className="settings-panel">
+            <div className="settings-section">
+              <h3>主题设置</h3>
+              <div className="theme-options">
+                <Button
+                  variant={theme === 'light' ? 'primary' : 'secondary'}
+                  onClick={() => handleThemeChange('light')}
+                >
+                  浅色主题
+                </Button>
+                <Button
+                  variant={theme === 'dark' ? 'primary' : 'secondary'}
+                  onClick={() => handleThemeChange('dark')}
+                >
+                  深色主题
+                </Button>
+                <Button
+                  variant={theme === 'auto' ? 'primary' : 'secondary'}
+                  onClick={() => handleThemeChange('auto')}
+                >
+                  跟随系统
+                </Button>
               </div>
             </div>
-          )}
-          {!['json-formatter', 'html-formatter', 'sse-parser', 'keyboard-listener', 'clipboard-manager', 'settings'].includes(activeApp) && (
-            <div className="app-placeholder">
-              <div className="placeholder-icon">🔧</div>
-              <h2>工具</h2>
-              <p>选择左侧的工具开始使用</p>
+          </div>
+        )
+      default:
+        return (
+          <div className="empty-content">
+            <div className="empty-state">
+              <div className="empty-icon">🔧</div>
+              <h3>选择一个工具开始使用</h3>
+              <p>从左侧选择一个工具来开始您的工作</p>
             </div>
-          )}
-        </div>
-      </main>
+          </div>
+        )
+    }
+  }
+
+  return (
+    <div className="workspace">
+      {/* 第一列：主分类 */}
+      <CategoryDock
+        categories={categories}
+        activeCategory={activeCategory}
+        onCategoryClick={handleCategoryClick}
+      />
+
+      {/* 第二列：工具列表 */}
+      <ToolsList
+        tools={currentTools}
+        activeTool={activeTool}
+        onToolClick={handleToolClick}
+        category={activeCategory}
+      />
+
+      {/* 第三列：内容面板 */}
+      <div className="workspace-content">
+        {renderToolContent()}
+      </div>
     </div>
   )
 }

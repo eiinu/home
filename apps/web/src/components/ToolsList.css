@@ -1,0 +1,245 @@
+.tools-list {
+  display: flex;
+  flex-direction: column;
+  background: white;
+  border-radius: 16px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  overflow: hidden;
+  height: 100%;
+  width: 240px;
+  flex-shrink: 0;
+}
+
+.tools-list.empty {
+  justify-content: center;
+  align-items: center;
+}
+
+.empty-state {
+  text-align: center;
+  color: #999;
+  padding: 40px 20px;
+}
+
+.empty-icon {
+  font-size: 48px;
+  margin-bottom: 12px;
+  opacity: 0.5;
+}
+
+.empty-state p {
+  margin: 0;
+  font-size: 14px;
+}
+
+.tools-list-header {
+  padding: 16px 20px;
+  border-bottom: 1px solid #f0f0f0;
+  background: #fafafa;
+  flex-shrink: 0;
+}
+
+.tools-list-title {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 600;
+  color: #333;
+}
+
+.tools-list-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  padding: 8px;
+  gap: 2px;
+  overflow-y: auto;
+}
+
+.tool-item {
+  display: flex;
+  align-items: center;
+  padding: 12px 16px;
+  background: transparent;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  color: #666;
+  font-size: 14px;
+  font-weight: 500;
+  text-align: left;
+  width: 100%;
+  gap: 12px;
+}
+
+.tool-item:hover {
+  background: rgba(0, 0, 0, 0.05);
+  color: #333;
+}
+
+.tool-item.active {
+  background: #007AFF;
+  color: white;
+  box-shadow: 0 2px 8px rgba(0, 122, 255, 0.3);
+}
+
+.tool-item.active:hover {
+  background: #0056CC;
+}
+
+.tool-item-icon {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  width: 24px;
+  height: 24px;
+  flex-shrink: 0;
+}
+
+.tool-item-badge {
+  position: absolute;
+  top: -6px;
+  right: -6px;
+  background: #FF3B30;
+  color: white;
+  font-size: 10px;
+  font-weight: 600;
+  padding: 2px 6px;
+  border-radius: 10px;
+  min-width: 16px;
+  height: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+}
+
+.tool-item-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 2px;
+}
+
+.tool-item-label {
+  font-weight: 500;
+  line-height: 1.2;
+}
+
+.tool-item-description {
+  font-size: 12px;
+  opacity: 0.7;
+  line-height: 1.2;
+}
+
+.tool-item.active .tool-item-description {
+  opacity: 0.9;
+}
+
+/* 移动端样式 */
+@media (max-width: 767px) {
+  .tools-list {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    border-radius: 0;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    height: auto;
+    flex-shrink: 0;
+    width: 100%;
+  }
+
+  .tools-list-header {
+    padding: 12px 16px;
+    background: white;
+  }
+
+  .tools-list-title {
+    font-size: 14px;
+  }
+
+  .tools-list-content {
+    flex-direction: row;
+    padding: 8px 16px;
+    gap: 6px;
+    overflow-x: auto;
+    overflow-y: visible;
+    -webkit-overflow-scrolling: touch;
+    width: 100%;
+    box-sizing: border-box;
+  }
+
+  .tool-item {
+    flex-shrink: 0;
+    flex-direction: column;
+    padding: 8px 10px;
+    min-width: 75px;
+    max-width: 75px;
+    gap: 3px;
+    text-align: center;
+    width: auto;
+  }
+
+  .tool-item-icon {
+    width: 16px;
+    height: 16px;
+    font-size: 14px;
+  }
+
+  .tool-item-content {
+    align-items: center;
+  }
+
+  .tool-item-label {
+    font-size: 12px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .tool-item-description {
+    display: none;
+  }
+}
+
+/* 深色主题 */
+[data-theme="dark"] .tools-list {
+  background: #2d2d2d;
+}
+
+[data-theme="dark"] .tools-list-header {
+  background: #404040;
+  border-bottom-color: #555;
+}
+
+[data-theme="dark"] .tools-list-title {
+  color: #ffffff;
+}
+
+[data-theme="dark"] .tool-item {
+  color: #E5E5E7;
+}
+
+[data-theme="dark"] .tool-item:hover {
+  background: rgba(255, 255, 255, 0.1);
+  color: white;
+}
+
+[data-theme="dark"] .tool-item.active {
+  background: #007AFF;
+  color: white;
+}
+
+[data-theme="dark"] .empty-state {
+  color: #999;
+}
+
+/* 移动端深色主题 */
+@media (max-width: 767px) {
+  [data-theme="dark"] .tools-list-header {
+    background: #2d2d2d;
+  }
+}

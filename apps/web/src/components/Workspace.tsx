@@ -4,6 +4,7 @@ import CategoryDock from './CategoryDock'
 import ToolsList from './ToolsList'
 import { useTheme } from './ThemeProvider'
 import { JsonFormatter, HtmlFormatter, SseParser, KeyboardListener, ClipboardManager, Button } from '@eiinu/tools'
+import { Game2048 } from '@eiinu/games'
 
 const Workspace: React.FC = () => {
   const [activeCategory, setActiveCategory] = useState('tools')
@@ -16,7 +17,8 @@ const Workspace: React.FC = () => {
     htmlFormatter: <HtmlFormatter />,
     sseParser: <SseParser />,
     keyboardListener: <KeyboardListener />,
-    clipboardManager: <ClipboardManager />
+    clipboardManager: <ClipboardManager />,
+    game2048: <Game2048 />
   }), [])
 
   // 主分类配置
@@ -25,6 +27,11 @@ const Workspace: React.FC = () => {
       id: 'tools',
       icon: '🛠️',
       label: '工具'
+    },
+    {
+      id: 'games',
+      icon: '🎮',
+      label: '游戏'
     },
     {
       id: 'settings',
@@ -65,6 +72,14 @@ const Workspace: React.FC = () => {
         icon: '📋',
         label: '剪贴板管理',
         description: '剪贴板内容管理'
+      }
+    ],
+    games: [
+      {
+        id: 'game-2048',
+        icon: '🎯',
+        label: '2048',
+        description: '经典数字合成游戏'
       }
     ],
     settings: [
@@ -113,6 +128,8 @@ const Workspace: React.FC = () => {
         return componentInstances.keyboardListener
       case 'clipboard-manager':
         return componentInstances.clipboardManager
+      case 'game-2048':
+        return componentInstances.game2048
       case 'theme-settings':
         return (
           <div className="settings-panel">

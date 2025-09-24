@@ -69,6 +69,7 @@ const ToolsList: React.FC<ToolsListProps> = ({
 function getCategoryDisplayName(categoryId: string): string {
   const categoryNames: Record<string, string> = {
     'tools': '开发工具',
+    'games': '游戏娱乐',
     'settings': '设置选项'
   }
   return categoryNames[categoryId] || '工具'

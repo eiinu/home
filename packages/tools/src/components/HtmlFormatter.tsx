@@ -1,14 +1,8 @@
-import React, { useState, useRef, useEffect } from 'react';
-import { EditorView } from '@codemirror/view';
-import { EditorState } from '@codemirror/state';
-import { html } from '@codemirror/lang-html';
-import { foldGutter } from '@codemirror/language';
-import { lineNumbers } from '@codemirror/view';
-import { defaultKeymap, history, historyKeymap } from '@codemirror/commands';
-import { keymap } from '@codemirror/view';
+import React, { useState, useEffect } from 'react';
 import './HtmlFormatter.css';
 import { useToast } from './Toast';
 import { Button } from './Button';
+import CodeMirrorEditor from './CodeMirrorEditor';
 
 interface HtmlFormatterProps {
   theme?: 'light' | 'dark' | 'auto';
@@ -29,8 +23,6 @@ const HtmlFormatter: React.FC<HtmlFormatterProps> = ({ theme = 'auto' }) => {
     return window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
   });
   const { showError, ToastContainer } = useToast();
-  const editorRef = useRef<HTMLDivElement>(null);
-  const viewRef = useRef<EditorView | null>(null);
 
   // 监听主题变化
   useEffect(() => {
@@ -74,72 +66,6 @@ const HtmlFormatter: React.FC<HtmlFormatterProps> = ({ theme = 'auto' }) => {
       observer.disconnect();
     };
   }, [theme]);
-
-  // 初始化编辑器
-  useEffect(() => {
-    if (!editorRef.current) return;
-
-    const state = EditorState.create({
-      doc: input,
-      extensions: [
-        lineNumbers(),
-        foldGutter(),
-        history(),
-        keymap.of([...defaultKeymap, ...historyKeymap]),
-        html(),
-        EditorView.updateListener.of((update) => {
-          if (update.docChanged) {
-            setInput(update.state.doc.toString());
-          }
-        }),
-        EditorView.theme({
-          '&': {
-            fontSize: '14px',
-            fontFamily: 'Monaco, Menlo, "Ubuntu Mono", monospace',
-          },
-          '.cm-content': {
-            padding: '16px',
-          },
-          '.cm-focused': {
-            outline: 'none',
-          },
-          '.cm-editor': {
-            borderRadius: '8px',
-            border: isDarkMode ? '1px solid #374151' : '1px solid #d1d5db',
-            backgroundColor: isDarkMode ? '#1f2937' : '#ffffff',
-          },
-          '.cm-scroller': {
-            fontFamily: 'Monaco, Menlo, "Ubuntu Mono", monospace',
-          },
-          '.cm-line': {
-            color: isDarkMode ? '#e5e7eb' : '#374151',
-          },
-          '.cm-gutters': {
-            backgroundColor: isDarkMode ? '#111827' : '#f9fafb',
-            color: isDarkMode ? '#9ca3af' : '#6b7280',
-            border: 'none',
-          },
-          '.cm-activeLineGutter': {
-            backgroundColor: isDarkMode ? '#374151' : '#e5e7eb',
-          },
-          '.cm-activeLine': {
-            backgroundColor: isDarkMode ? 'rgba(55, 65, 81, 0.3)' : 'rgba(229, 231, 235, 0.3)',
-          },
-        }),
-      ],
-    });
-
-    const view = new EditorView({
-      state,
-      parent: editorRef.current,
-    });
-
-    viewRef.current = view;
-
-    return () => {
-      view.destroy();
-    };
-  }, [isDarkMode]);
 
   // HTML格式化函数
   const formatHtml = (html: string): string => {
@@ -271,7 +197,7 @@ const HtmlFormatter: React.FC<HtmlFormatterProps> = ({ theme = 'auto' }) => {
   const handleFormat = () => {
     try {
       const formatted = formatHtml(input);
-      updateEditor(formatted);
+      setInput(formatted);
     } catch (error) {
       showError('HTML格式化失败，请检查HTML语法是否正确');
     }
@@ -280,7 +206,7 @@ const HtmlFormatter: React.FC<HtmlFormatterProps> = ({ theme = 'auto' }) => {
   const handleMinify = () => {
     try {
       const minified = minifyHtml(input);
-      updateEditor(minified);
+      setInput(minified);
     } catch (error) {
       showError('HTML压缩失败');
     }
@@ -289,7 +215,7 @@ const HtmlFormatter: React.FC<HtmlFormatterProps> = ({ theme = 'auto' }) => {
   const handleEscape = () => {
     try {
       const escaped = escapeHtml(input);
-      updateEditor(escaped);
+      setInput(escaped);
     } catch (error) {
       showError('HTML转义失败');
     }
@@ -298,28 +224,14 @@ const HtmlFormatter: React.FC<HtmlFormatterProps> = ({ theme = 'auto' }) => {
   const handleUnescape = () => {
     try {
       const unescaped = unescapeHtml(input);
-      updateEditor(unescaped);
+      setInput(unescaped);
     } catch (error) {
       showError('HTML反转义失败');
     }
   };
 
-  const updateEditor = (newContent: string) => {
-    if (viewRef.current) {
-      const transaction = viewRef.current.state.update({
-        changes: {
-          from: 0,
-          to: viewRef.current.state.doc.length,
-          insert: newContent,
-        },
-      });
-      viewRef.current.dispatch(transaction);
-    }
-    setInput(newContent);
-  };
-
   const handleClear = () => {
-    updateEditor('');
+    setInput('');
   };
 
   const handleCopy = async () => {
@@ -357,7 +269,12 @@ const HtmlFormatter: React.FC<HtmlFormatterProps> = ({ theme = 'auto' }) => {
       </div>
       
       <div className="html-formatter-editor">
-        <div ref={editorRef} />
+        <CodeMirrorEditor
+          value={input}
+          onChange={setInput}
+          language="html"
+          theme={theme}
+        />
       </div>
       
       <div className="html-formatter-info">

@@ -1,14 +1,8 @@
-import React, { useState, useRef, useEffect } from 'react';
-import { EditorView } from '@codemirror/view';
-import { EditorState } from '@codemirror/state';
-import { json } from '@codemirror/lang-json';
-import { foldGutter } from '@codemirror/language';
-import { lineNumbers } from '@codemirror/view';
-import { defaultKeymap, history, historyKeymap } from '@codemirror/commands';
-import { keymap } from '@codemirror/view';
+import React, { useState, useEffect } from 'react';
 import './JsonFormatter.css';
 import { useToast } from './Toast';
 import { Button } from './Button';
+import CodeMirrorEditor from './CodeMirrorEditor';
 
 interface JsonFormatterProps {
   theme?: 'light' | 'dark' | 'auto';
@@ -29,8 +23,6 @@ const JsonFormatter: React.FC<JsonFormatterProps> = ({ theme = 'auto' }) => {
     return window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
   });
   const { showError, ToastContainer } = useToast();
-  const editorRef = useRef<HTMLDivElement>(null);
-  const viewRef = useRef<EditorView | null>(null);
 
   // 监听主题变化
   useEffect(() => {
@@ -85,92 +77,6 @@ const JsonFormatter: React.FC<JsonFormatterProps> = ({ theme = 'auto' }) => {
     };
   }, [theme]);
 
-  // 初始化 CodeMirror 编辑器
-  useEffect(() => {
-    if (!editorRef.current) return;
-
-    const extensions = [
-      lineNumbers(),
-      foldGutter(),
-      history(),
-      keymap.of([...defaultKeymap, ...historyKeymap]),
-      json(),
-      EditorState.transactionFilter.of((tr) => {
-        if (tr.docChanged) {
-          const newContent = tr.newDoc.toString();
-          setInput(newContent);
-        }
-        return tr;
-      }),
-      // 使用默认主题，通过 CSS 自定义样式
-      EditorView.theme({
-        '&': {
-          fontSize: '14px',
-        },
-        '.cm-content': {
-          padding: '10px',
-        },
-        '.cm-focused .cm-cursor': {
-          borderLeftColor: isDarkMode ? '#528bff' : '#0969da',
-        },
-        '.cm-focused .cm-selectionBackground, ::selection': {
-          backgroundColor: isDarkMode ? '#3392FF44' : '#0969da44',
-        },
-        '.cm-editor': {
-          backgroundColor: isDarkMode ? '#0d1117' : '#ffffff',
-          color: isDarkMode ? '#e6edf3' : '#24292f',
-        },
-        '.cm-gutters': {
-          backgroundColor: isDarkMode ? '#161b22' : '#f6f8fa',
-          color: isDarkMode ? '#7d8590' : '#656d76',
-          border: 'none',
-        },
-        '.cm-activeLineGutter': {
-          backgroundColor: isDarkMode ? '#21262d' : '#f6f8fa',
-        },
-        '.cm-activeLine': {
-          backgroundColor: isDarkMode ? '#21262d22' : '#f6f8fa',
-        },
-        '.cm-foldGutter .cm-gutterElement': {
-          color: isDarkMode ? '#7d8590' : '#656d76',
-        },
-        '.cm-foldGutter .cm-gutterElement:hover': {
-          backgroundColor: isDarkMode ? '#30363d' : '#f3f4f6',
-        },
-      }, { dark: isDarkMode }),
-    ];
-
-    const state = EditorState.create({
-      doc: input,
-      extensions,
-    });
-
-    const view = new EditorView({
-      state,
-      parent: editorRef.current,
-    });
-
-    viewRef.current = view;
-
-    return () => {
-      view.destroy();
-    };
-  }, [isDarkMode]);
-
-  // 更新编辑器内容
-  useEffect(() => {
-    if (viewRef.current && viewRef.current.state.doc.toString() !== input) {
-      const transaction = viewRef.current.state.update({
-        changes: {
-          from: 0,
-          to: viewRef.current.state.doc.length,
-          insert: input,
-        },
-      });
-      viewRef.current.dispatch(transaction);
-    }
-  }, [input]);
-
   const formatJson = () => {
     try {
       const parsed = JSON.parse(input);
@@ -209,10 +115,15 @@ const JsonFormatter: React.FC<JsonFormatterProps> = ({ theme = 'auto' }) => {
             清空
           </Button>
         </div>
-
       </div>
       <div className="editor-container">
-        <div ref={editorRef} className="editor" />
+        <CodeMirrorEditor
+          value={input}
+          onChange={setInput}
+          language="json"
+          theme={theme}
+          className="editor"
+        />
       </div>
       <ToastContainer />
     </div>

@@ -3,8 +3,8 @@ import './Workspace.css'
 import CategoryDock from './CategoryDock'
 import ToolsList from './ToolsList'
 import { useTheme } from './ThemeProvider'
-import { JsonFormatter, HtmlFormatter, SseParser, KeyboardListener, ClipboardManager, Button, Base64Tool, RegexTester, ColorTool } from '@eiinu/tools'
-import { BorderEditor } from '@eiinu/creative'
+import { JsonFormatter, HtmlFormatter, SseParser, KeyboardListener, ClipboardManager, Button, Base64Tool, RegexTester } from '@eiinu/tools'
+import { BorderEditor, ColorTool } from '@eiinu/creative'
 // import { Game2048 } from '@eiinu/games' // 暂时关闭游戏功能
 
 const Workspace: React.FC = () => {
@@ -79,12 +79,6 @@ const Workspace: React.FC = () => {
         description: '正则表达式测试和验证'
       },
       {
-        id: 'color-tool',
-        icon: '🎨',
-        label: '颜色工具',
-        description: '颜色选择器和格式转换'
-      },
-      {
         id: 'sse-parser',
         icon: '📡',
         label: 'SSE 解析器',
@@ -109,6 +103,12 @@ const Workspace: React.FC = () => {
         icon: '🖼️',
         label: 'CSS 边框编辑器',
         description: '可视化编辑 CSS 边框样式'
+      },
+      {
+        id: 'color-tool',
+        icon: '🎨',
+        label: '颜色工具',
+        description: '颜色选择器和格式转换'
       }
     ],
     // 暂时关闭游戏功能

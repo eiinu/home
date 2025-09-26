@@ -4,6 +4,7 @@ import CategoryDock from './CategoryDock'
 import ToolsList from './ToolsList'
 import { useTheme } from './ThemeProvider'
 import { JsonFormatter, HtmlFormatter, SseParser, KeyboardListener, ClipboardManager, Button, Base64Tool, RegexTester, ColorTool } from '@eiinu/tools'
+import { BorderEditor } from '@eiinu/creative'
 // import { Game2048 } from '@eiinu/games' // 暂时关闭游戏功能
 
 const Workspace: React.FC = () => {
@@ -21,6 +22,7 @@ const Workspace: React.FC = () => {
     base64Tool: <Base64Tool />,
     regexTester: <RegexTester />,
     colorTool: <ColorTool />,
+    borderEditor: <BorderEditor />,
     // game2048: <Game2048 /> // 暂时关闭游戏功能
   }), [])
 
@@ -30,6 +32,11 @@ const Workspace: React.FC = () => {
       id: 'tools',
       icon: '🛠️',
       label: '工具'
+    },
+    {
+      id: 'creative',
+      icon: '🎨',
+      label: '创意工坊'
     },
     // 暂时关闭游戏功能
     // {
@@ -96,6 +103,14 @@ const Workspace: React.FC = () => {
         description: '剪贴板内容管理'
       }
     ],
+    creative: [
+      {
+        id: 'border-editor',
+        icon: '🖼️',
+        label: 'CSS 边框编辑器',
+        description: '可视化编辑 CSS 边框样式'
+      }
+    ],
     // 暂时关闭游戏功能
     // games: [
     //   {
@@ -157,6 +172,8 @@ const Workspace: React.FC = () => {
         return componentInstances.keyboardListener
       case 'clipboard-manager':
         return componentInstances.clipboardManager
+      case 'border-editor':
+        return componentInstances.borderEditor
       // 暂时关闭游戏功能
       // case 'game-2048':
       //   return componentInstances.game2048

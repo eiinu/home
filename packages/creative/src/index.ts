@@ -1,0 +1,1 @@
+export { default as BorderEditor } from './components/BorderEditor';

@@ -1,4 +1,4 @@
-# 🛠️ Eiinu Tools
+# 🏠 Eiinu's Home
 
 一个现代化的开发者工具集合，**完全由 AI Agent 自主开发完成**。
 

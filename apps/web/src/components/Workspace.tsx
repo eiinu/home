@@ -4,7 +4,7 @@ import CategoryDock from './CategoryDock'
 import ToolsList from './ToolsList'
 import { useTheme } from './ThemeProvider'
 import { JsonFormatter, HtmlFormatter, SseParser, KeyboardListener, ClipboardManager, Button } from '@eiinu/tools'
-import { Game2048 } from '@eiinu/games'
+// import { Game2048 } from '@eiinu/games' // 暂时关闭游戏功能
 
 const Workspace: React.FC = () => {
   const [activeCategory, setActiveCategory] = useState('tools')
@@ -18,7 +18,7 @@ const Workspace: React.FC = () => {
     sseParser: <SseParser />,
     keyboardListener: <KeyboardListener />,
     clipboardManager: <ClipboardManager />,
-    game2048: <Game2048 />
+    // game2048: <Game2048 /> // 暂时关闭游戏功能
   }), [])
 
   // 主分类配置
@@ -28,11 +28,12 @@ const Workspace: React.FC = () => {
       icon: '🛠️',
       label: '工具'
     },
-    {
-      id: 'games',
-      icon: '🎮',
-      label: '游戏'
-    },
+    // 暂时关闭游戏功能
+    // {
+    //   id: 'games',
+    //   icon: '🎮',
+    //   label: '游戏'
+    // },
     {
       id: 'settings',
       icon: '⚙️',
@@ -74,14 +75,15 @@ const Workspace: React.FC = () => {
         description: '剪贴板内容管理'
       }
     ],
-    games: [
-      {
-        id: 'game-2048',
-        icon: '🎯',
-        label: '2048',
-        description: '经典数字合成游戏'
-      }
-    ],
+    // 暂时关闭游戏功能
+    // games: [
+    //   {
+    //     id: 'game-2048',
+    //     icon: '🎯',
+    //     label: '2048',
+    //     description: '经典数字合成游戏'
+    //   }
+    // ],
     settings: [
       {
         id: 'theme-settings',
@@ -128,8 +130,9 @@ const Workspace: React.FC = () => {
         return componentInstances.keyboardListener
       case 'clipboard-manager':
         return componentInstances.clipboardManager
-      case 'game-2048':
-        return componentInstances.game2048
+      // 暂时关闭游戏功能
+      // case 'game-2048':
+      //   return componentInstances.game2048
       case 'theme-settings':
         return (
           <div className="settings-panel">

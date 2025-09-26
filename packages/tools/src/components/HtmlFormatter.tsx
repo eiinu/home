@@ -198,9 +198,66 @@ const HtmlFormatter: React.FC<HtmlFormatterProps> = ({ theme = 'auto' }) => {
 
   // HTML反转义函数
   const unescapeHtml = (html: string): string => {
-    const div = document.createElement('div');
-    div.innerHTML = html;
-    return div.textContent || div.innerText || '';
+    // 创建一个映射表来处理常见的HTML实体
+    const htmlEntities: { [key: string]: string } = {
+      '&amp;': '&',
+      '&lt;': '<',
+      '&gt;': '>',
+      '&quot;': '"',
+      '&apos;': "'",
+      '&#39;': "'",
+      '&nbsp;': ' ',
+      '&copy;': '©',
+      '&reg;': '®',
+      '&trade;': '™',
+      '&hellip;': '…',
+      '&mdash;': '—',
+      '&ndash;': '–',
+      '&lsquo;': `'`,
+      '&rsquo;': `'`,
+      '&ldquo;': '"',
+      '&rdquo;': '"',
+      '&bull;': '•',
+      '&middot;': '·',
+      '&sect;': '§',
+      '&para;': '¶',
+      '&dagger;': '†',
+      '&Dagger;': '‡',
+      '&permil;': '‰',
+      '&lsaquo;': '‹',
+      '&rsaquo;': '›',
+      '&euro;': '€',
+      '&pound;': '£',
+      '&yen;': '¥',
+      '&cent;': '¢'
+    };
+
+    let result = html;
+    
+    // 处理命名实体
+    for (const [entity, char] of Object.entries(htmlEntities)) {
+      result = result.replace(new RegExp(entity, 'g'), char);
+    }
+    
+    // 处理数字实体 (&#数字;)
+    result = result.replace(/&#(\d+);/g, (match, num) => {
+      const code = parseInt(num, 10);
+      if (code >= 0 && code <= 1114111) { // Unicode范围检查
+        return String.fromCharCode(code);
+      }
+      return match; // 如果不是有效的Unicode码点，保持原样
+    });
+    
+    // 处理十六进制实体 (&#x十六进制;)
+    result = result.replace(/&#x([0-9a-fA-F]+);/g, (match, hex) => {
+      const code = parseInt(hex, 16);
+      if (code >= 0 && code <= 1114111) { // Unicode范围检查
+        return String.fromCharCode(code);
+      }
+      return match; // 如果不是有效的Unicode码点，保持原样
+    });
+    
+    return result;
   };
 
   // 压缩HTML

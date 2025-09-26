@@ -3,12 +3,12 @@ import './Workspace.css'
 import CategoryDock from './CategoryDock'
 import ToolsList from './ToolsList'
 import { useTheme } from './ThemeProvider'
-import { JsonFormatter, HtmlFormatter, SseParser, KeyboardListener, ClipboardManager, Button } from '@eiinu/tools'
+import { JsonFormatter, HtmlFormatter, SseParser, KeyboardListener, ClipboardManager, Button, Base64Tool, RegexTester, ColorTool } from '@eiinu/tools'
 // import { Game2048 } from '@eiinu/games' // 暂时关闭游戏功能
 
 const Workspace: React.FC = () => {
   const [activeCategory, setActiveCategory] = useState('tools')
-  const [activeTool, setActiveTool] = useState('json-formatter')
+  const [activeTool, setActiveTool] = useState('base64-tool')
   const { theme, setTheme } = useTheme()
 
   // 使用 useMemo 来保持组件实例，避免重新创建
@@ -18,6 +18,9 @@ const Workspace: React.FC = () => {
     sseParser: <SseParser />,
     keyboardListener: <KeyboardListener />,
     clipboardManager: <ClipboardManager />,
+    base64Tool: <Base64Tool />,
+    regexTester: <RegexTester />,
+    colorTool: <ColorTool />,
     // game2048: <Game2048 /> // 暂时关闭游戏功能
   }), [])
 
@@ -55,6 +58,24 @@ const Workspace: React.FC = () => {
         icon: '</>',
         label: 'HTML 工具',
         description: 'HTML 格式化和美化'
+      },
+      {
+        id: 'base64-tool',
+        icon: '🔐',
+        label: 'Base64 工具',
+        description: 'Base64 编码和解码'
+      },
+      {
+        id: 'regex-tester',
+        icon: '🔍',
+        label: '正则测试器',
+        description: '正则表达式测试和验证'
+      },
+      {
+        id: 'color-tool',
+        icon: '🎨',
+        label: '颜色工具',
+        description: '颜色选择器和格式转换'
       },
       {
         id: 'sse-parser',
@@ -124,6 +145,12 @@ const Workspace: React.FC = () => {
         return componentInstances.jsonFormatter
       case 'html-formatter':
         return componentInstances.htmlFormatter
+      case 'base64-tool':
+        return componentInstances.base64Tool
+      case 'regex-tester':
+        return componentInstances.regexTester
+      case 'color-tool':
+        return componentInstances.colorTool
       case 'sse-parser':
         return componentInstances.sseParser
       case 'keyboard-listener':

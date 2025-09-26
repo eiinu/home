@@ -4,6 +4,10 @@ export { default as CodeMirrorEditor } from './components/CodeMirrorEditor';
 export { default as SseParser } from './components/SseParser';
 export { default as KeyboardListener } from './components/KeyboardListener';
 export { default as ClipboardManager } from './components/ClipboardManager';
+export { default as Base64Tool } from './components/Base64Tool';
+export { default as RegexTester } from './components/RegexTester';
+export { default as ColorTool } from './components/ColorTool';
+
 export { Button } from './components/Button';
 
 // 导出类型

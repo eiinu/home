@@ -1,7 +1,8 @@
 import React, { useState, useCallback } from 'react'
 import './Base64Tool.css'
 import CodeMirrorEditor from './CodeMirrorEditor'
-import Button from './Button'
+import { Button } from './Button.tsx'
+import { useToast } from './Toast'
 
 interface Base64ToolProps {
   theme?: 'light' | 'dark' | 'auto'
@@ -11,12 +12,13 @@ const Base64Tool: React.FC<Base64ToolProps> = ({ theme = 'auto' }) => {
   const [inputText, setInputText] = useState('')
   const [outputText, setOutputText] = useState('')
   const [mode, setMode] = useState<'encode' | 'decode'>('encode')
-  const [message, setMessage] = useState('')
+  const { showSuccess, showError, showInfo, ToastContainer } = useToast()
 
-  const showMessage = useCallback((msg: string) => {
-    setMessage(msg)
-    setTimeout(() => setMessage(''), 3000)
-  }, [])
+  const showMessage = useCallback((msg: string, type: 'success' | 'error' | 'info' = 'info') => {
+    if (type === 'success') showSuccess(msg)
+    else if (type === 'error') showError(msg)
+    else showInfo(msg)
+  }, [showSuccess, showError, showInfo])
 
   const handleEncode = useCallback(() => {
     try {
@@ -26,23 +28,23 @@ const Base64Tool: React.FC<Base64ToolProps> = ({ theme = 'auto' }) => {
       }
       const encoded = btoa(unescape(encodeURIComponent(inputText)))
       setOutputText(encoded)
-      showMessage('编码成功！')
+      showMessage('编码成功！', 'success')
     } catch {
-      showMessage('编码失败：输入包含无效字符')
+      showMessage('编码失败：输入包含无效字符', 'error')
     }
   }, [inputText, showMessage])
 
   const handleDecode = useCallback(() => {
     try {
       if (!inputText.trim()) {
-        showMessage('请输入要解码的 Base64 文本')
+      showMessage('请输入要解码的 Base64 文本', 'info')
         return
       }
       const decoded = decodeURIComponent(escape(atob(inputText.trim())))
       setOutputText(decoded)
-      showMessage('解码成功！')
+      showMessage('解码成功！', 'success')
     } catch {
-      showMessage('解码失败：请检查 Base64 格式是否正确')
+      showMessage('解码失败：请检查 Base64 格式是否正确', 'error')
     }
   }, [inputText, showMessage])
 
@@ -57,19 +59,19 @@ const Base64Tool: React.FC<Base64ToolProps> = ({ theme = 'auto' }) => {
   const handleClear = useCallback(() => {
     setInputText('')
     setOutputText('')
-    showMessage('已清空内容')
+    showMessage('已清空内容', 'success')
   }, [showMessage])
 
   const handleCopy = useCallback(async () => {
     if (!outputText) {
-      showMessage('没有可复制的内容')
+      showMessage('没有可复制的内容', 'info')
       return
     }
     try {
       await navigator.clipboard.writeText(outputText)
-      showMessage('已复制到剪贴板')
+      showMessage('已复制到剪贴板', 'success')
     } catch {
-      showMessage('复制失败')
+      showMessage('复制失败', 'error')
     }
   }, [outputText, showMessage])
 
@@ -78,7 +80,7 @@ const Base64Tool: React.FC<Base64ToolProps> = ({ theme = 'auto' }) => {
     setInputText(outputText)
     setOutputText(temp)
     setMode(mode === 'encode' ? 'decode' : 'encode')
-    showMessage('已交换输入输出内容')
+    showMessage('已交换输入输出内容', 'info')
   }, [inputText, outputText, mode, showMessage])
 
   const handleFileUpload = useCallback((event: React.ChangeEvent<HTMLInputElement>) => {
@@ -101,6 +103,7 @@ const Base64Tool: React.FC<Base64ToolProps> = ({ theme = 'auto' }) => {
 
   return (
     <div className="base64-tool">
+      <ToastContainer />
       <div className="base64-tool-header">
         <h2 className="base64-tool-title">Base64 编码/解码器</h2>
         <div className="base64-tool-controls">
@@ -137,11 +140,7 @@ const Base64Tool: React.FC<Base64ToolProps> = ({ theme = 'auto' }) => {
         </div>
       </div>
 
-      {message && (
-        <div className="base64-tool-message">
-          {message}
-        </div>
-      )}
+      {/* 使用全局 Toast 悬浮提示，移除内联消息块 */}
 
       <div className="base64-tool-content">
         <div className="base64-tool-section">

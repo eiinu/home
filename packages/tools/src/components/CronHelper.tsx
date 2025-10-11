@@ -2,6 +2,7 @@ import React, { useCallback, useMemo, useState, useEffect } from 'react'
 import './CronHelper.css'
 import CodeMirrorEditor from './CodeMirrorEditor'
 import Button from './Button'
+import { useToast } from './Toast'
 
 interface CronHelperProps {
   theme?: 'light' | 'dark' | 'auto'
@@ -84,14 +85,9 @@ function estimateNextRuns(expr: string, count = 5): string[] {
 
 const CronHelper: React.FC<CronHelperProps> = ({ theme = 'auto' }) => {
   const [expr, setExpr] = useState('* * * * *')
-  const [message, setMessage] = useState('')
   const [parts, setParts] = useState<CronParts | null>(() => parseCron(expr))
   const [nextRuns, setNextRuns] = useState<string[]>([])
-
-  const showMessage = useCallback((msg: string) => {
-    setMessage(msg)
-    setTimeout(() => setMessage(''), 3000)
-  }, [])
+  const { showSuccess, showError, showInfo, ToastContainer } = useToast()
 
   useEffect(() => {
     setParts(parseCron(expr))
@@ -100,17 +96,17 @@ const CronHelper: React.FC<CronHelperProps> = ({ theme = 'auto' }) => {
 
   const applyPreset = useCallback((preset: string) => {
     setExpr(preset)
-    showMessage('已应用预设')
-  }, [showMessage])
+    showInfo('已应用预设')
+  }, [showInfo])
 
   const copyExpr = useCallback(async () => {
     try {
       await navigator.clipboard.writeText(expr)
-      showMessage('表达式已复制')
+      showSuccess('表达式已复制')
     } catch {
-      showMessage('复制失败')
+      showError('复制失败')
     }
-  }, [expr, showMessage])
+  }, [expr, showSuccess, showError])
 
   const parsedFields = useMemo(() => {
     if (!parts) return []
@@ -125,16 +121,13 @@ const CronHelper: React.FC<CronHelperProps> = ({ theme = 'auto' }) => {
 
   return (
     <div className="cron-helper">
+      <ToastContainer />
       <div className="cron-helper-header">
         <h2 className="cron-helper-title">Cron 表达式助手</h2>
         <div className="cron-helper-mode">
           <Button variant="secondary" size="small" onClick={copyExpr}>📋 复制表达式</Button>
         </div>
       </div>
-
-      {message && (
-        <div className="cron-helper-message">{message}</div>
-      )}
 
       <div className="cron-sections">
         <div className="cron-section">

@@ -1,7 +1,8 @@
 import React, { useState, useCallback, useMemo } from 'react'
 import './RegexTester.css'
 import CodeMirrorEditor from './CodeMirrorEditor'
-import Button from './Button'
+import { Button } from './Button.tsx'
+import { useToast } from './Toast'
 
 interface RegexTesterProps {
   theme?: 'light' | 'dark' | 'auto'
@@ -17,12 +18,13 @@ const RegexTester: React.FC<RegexTesterProps> = ({ theme = 'auto' }) => {
   const [pattern, setPattern] = useState('')
   const [flags, setFlags] = useState('g')
   const [testText, setTestText] = useState('')
-  const [message, setMessage] = useState('')
+  const { showSuccess, showError, showInfo, ToastContainer } = useToast()
 
-  const showMessage = useCallback((msg: string) => {
-    setMessage(msg)
-    setTimeout(() => setMessage(''), 3000)
-  }, [])
+  const showMessage = useCallback((msg: string, type: 'success' | 'error' | 'info' = 'info') => {
+    if (type === 'success') showSuccess(msg)
+    else if (type === 'error') showError(msg)
+    else showInfo(msg)
+  }, [showSuccess, showError, showInfo])
 
   // 计算匹配结果
   const matchResults = useMemo(() => {
@@ -97,21 +99,21 @@ const RegexTester: React.FC<RegexTesterProps> = ({ theme = 'auto' }) => {
     setPattern('')
     setTestText('')
     setFlags('g')
-    showMessage('已清空所有内容')
+    showMessage('已清空所有内容', 'success')
   }, [showMessage])
 
   const handleCopyMatches = useCallback(async () => {
     if (matchResults.length === 0) {
-      showMessage('没有匹配结果可复制')
+      showMessage('没有匹配结果可复制', 'info')
       return
     }
 
     const matchText = matchResults.map(result => result.match).join('\n')
     try {
       await navigator.clipboard.writeText(matchText)
-      showMessage('匹配结果已复制到剪贴板')
+      showMessage('匹配结果已复制到剪贴板', 'success')
     } catch {
-      showMessage('复制失败')
+      showMessage('复制失败', 'error')
     }
   }, [matchResults, showMessage])
 
@@ -129,7 +131,7 @@ const RegexTester: React.FC<RegexTesterProps> = ({ theme = 'auto' }) => {
 
   const handlePatternSelect = useCallback((selectedPattern: string) => {
     setPattern(selectedPattern)
-    showMessage('已应用正则表达式模式')
+    showMessage('已应用正则表达式模式', 'info')
   }, [showMessage])
 
   const isValidRegex = useMemo(() => {
@@ -144,6 +146,7 @@ const RegexTester: React.FC<RegexTesterProps> = ({ theme = 'auto' }) => {
 
   return (
     <div className="regex-tester">
+      <ToastContainer />
       <div className="regex-tester-header">
         <h2 className="regex-tester-title">正则表达式测试器</h2>
         <div className="regex-tester-actions">
@@ -161,11 +164,7 @@ const RegexTester: React.FC<RegexTesterProps> = ({ theme = 'auto' }) => {
         </div>
       </div>
 
-      {message && (
-        <div className="regex-tester-message">
-          {message}
-        </div>
-      )}
+      {/* 使用全局 Toast 提示，移除内联消息块 */}
 
       <div className="regex-tester-content">
         {/* 正则表达式输入区 */}

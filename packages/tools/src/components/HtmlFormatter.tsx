@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import './HtmlFormatter.css';
-import { useToast } from './Toast';
-import { Button } from './Button';
+import useToast from './useToast';
+import { ToastContainer } from './Toast';
+import Button from './Button';
 import CodeMirrorEditor from './CodeMirrorEditor';
 
 interface HtmlFormatterProps {
@@ -22,7 +23,7 @@ const HtmlFormatter: React.FC<HtmlFormatterProps> = ({ theme = 'auto' }) => {
     // 回退到系统主题
     return window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
   });
-  const { showError, ToastContainer } = useToast();
+  const { showError, messages, removeToast } = useToast();
 
   // 监听主题变化
   useEffect(() => {
@@ -89,7 +90,7 @@ const HtmlFormatter: React.FC<HtmlFormatterProps> = ({ theme = 'auto' }) => {
           indent -= indentSize;
           result += ' '.repeat(Math.max(0, indent)) + token;
           if (i < tokens.length - 1) result += '\n';
-        } else if (token.match(/^<\w[^>]*[^\/]>$/)) {
+        } else if (token.match(/^<\w[^>]*[^/]>$/)) {
           // 开始标签
           result += ' '.repeat(indent) + token;
           if (i < tokens.length - 1) result += '\n';
@@ -110,7 +111,7 @@ const HtmlFormatter: React.FC<HtmlFormatterProps> = ({ theme = 'auto' }) => {
       }
       
       return result;
-    } catch (error) {
+    } catch {
       throw new Error('HTML格式化失败');
     }
   };
@@ -198,7 +199,7 @@ const HtmlFormatter: React.FC<HtmlFormatterProps> = ({ theme = 'auto' }) => {
     try {
       const formatted = formatHtml(input);
       setInput(formatted);
-    } catch (error) {
+    } catch {
       showError('HTML格式化失败，请检查HTML语法是否正确');
     }
   };
@@ -207,7 +208,7 @@ const HtmlFormatter: React.FC<HtmlFormatterProps> = ({ theme = 'auto' }) => {
     try {
       const minified = minifyHtml(input);
       setInput(minified);
-    } catch (error) {
+    } catch {
       showError('HTML压缩失败');
     }
   };
@@ -216,7 +217,7 @@ const HtmlFormatter: React.FC<HtmlFormatterProps> = ({ theme = 'auto' }) => {
     try {
       const escaped = escapeHtml(input);
       setInput(escaped);
-    } catch (error) {
+    } catch {
       showError('HTML转义失败');
     }
   };
@@ -225,7 +226,7 @@ const HtmlFormatter: React.FC<HtmlFormatterProps> = ({ theme = 'auto' }) => {
     try {
       const unescaped = unescapeHtml(input);
       setInput(unescaped);
-    } catch (error) {
+    } catch {
       showError('HTML反转义失败');
     }
   };
@@ -237,7 +238,7 @@ const HtmlFormatter: React.FC<HtmlFormatterProps> = ({ theme = 'auto' }) => {
   const handleCopy = async () => {
     try {
       await navigator.clipboard.writeText(input);
-    } catch (error) {
+    } catch {
       showError('复制失败，请手动选择文本复制');
     }
   };
@@ -282,7 +283,7 @@ const HtmlFormatter: React.FC<HtmlFormatterProps> = ({ theme = 'auto' }) => {
         <span>行数: {input.split('\n').length}</span>
       </div>
       
-      <ToastContainer />
+      <ToastContainer messages={messages} onRemove={removeToast} />
     </div>
   );
 };

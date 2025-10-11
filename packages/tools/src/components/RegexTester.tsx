@@ -1,8 +1,9 @@
 import React, { useState, useCallback, useMemo } from 'react'
 import './RegexTester.css'
 import CodeMirrorEditor from './CodeMirrorEditor'
-import { Button } from './Button.tsx'
-import { useToast } from './Toast'
+import Button from './Button'
+import useToast from './useToast'
+import { ToastContainer } from './Toast'
 
 interface RegexTesterProps {
   theme?: 'light' | 'dark' | 'auto'
@@ -18,7 +19,7 @@ const RegexTester: React.FC<RegexTesterProps> = ({ theme = 'auto' }) => {
   const [pattern, setPattern] = useState('')
   const [flags, setFlags] = useState('g')
   const [testText, setTestText] = useState('')
-  const { showSuccess, showError, showInfo, ToastContainer } = useToast()
+  const { showSuccess, showError, showInfo, messages, removeToast } = useToast()
 
   const showMessage = useCallback((msg: string, type: 'success' | 'error' | 'info' = 'info') => {
     if (type === 'success') showSuccess(msg)
@@ -146,7 +147,6 @@ const RegexTester: React.FC<RegexTesterProps> = ({ theme = 'auto' }) => {
 
   return (
     <div className="regex-tester">
-      <ToastContainer />
       <div className="regex-tester-header">
         <h2 className="regex-tester-title">正则表达式测试器</h2>
         <div className="regex-tester-actions">
@@ -165,6 +165,7 @@ const RegexTester: React.FC<RegexTesterProps> = ({ theme = 'auto' }) => {
       </div>
 
       {/* 使用全局 Toast 提示，移除内联消息块 */}
+      <ToastContainer messages={messages} onRemove={removeToast} />
 
       <div className="regex-tester-content">
         {/* 正则表达式输入区 */}

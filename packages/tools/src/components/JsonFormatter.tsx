@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import './JsonFormatter.css';
-import { useToast } from './Toast';
-import { Button } from './Button';
+import useToast from './useToast';
+import { ToastContainer } from './Toast';
+import Button from './Button';
 import CodeMirrorEditor from './CodeMirrorEditor';
 
 interface JsonFormatterProps {
@@ -22,7 +23,7 @@ const JsonFormatter: React.FC<JsonFormatterProps> = ({ theme = 'auto' }) => {
     // 回退到系统主题
     return window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
   });
-  const { showError, ToastContainer } = useToast();
+  const { showError, messages, removeToast } = useToast();
 
   // 监听主题变化
   useEffect(() => {
@@ -125,7 +126,7 @@ const JsonFormatter: React.FC<JsonFormatterProps> = ({ theme = 'auto' }) => {
           className="editor"
         />
       </div>
-      <ToastContainer />
+      <ToastContainer messages={messages} onRemove={removeToast} />
     </div>
   );
 };

@@ -1,8 +1,9 @@
 import React, { useState, useCallback } from 'react'
 import './Base64Tool.css'
 import CodeMirrorEditor from './CodeMirrorEditor'
-import { Button } from './Button.tsx'
-import { useToast } from './Toast'
+import Button from './Button'
+import useToast from './useToast'
+import { ToastContainer } from './Toast'
 
 interface Base64ToolProps {
   theme?: 'light' | 'dark' | 'auto'
@@ -12,7 +13,7 @@ const Base64Tool: React.FC<Base64ToolProps> = ({ theme = 'auto' }) => {
   const [inputText, setInputText] = useState('')
   const [outputText, setOutputText] = useState('')
   const [mode, setMode] = useState<'encode' | 'decode'>('encode')
-  const { showSuccess, showError, showInfo, ToastContainer } = useToast()
+  const { showSuccess, showError, showInfo, messages, removeToast } = useToast()
 
   const showMessage = useCallback((msg: string, type: 'success' | 'error' | 'info' = 'info') => {
     if (type === 'success') showSuccess(msg)
@@ -103,7 +104,7 @@ const Base64Tool: React.FC<Base64ToolProps> = ({ theme = 'auto' }) => {
 
   return (
     <div className="base64-tool">
-      <ToastContainer />
+      <ToastContainer messages={messages} onRemove={removeToast} />
       <div className="base64-tool-header">
         <h2 className="base64-tool-title">Base64 编码/解码器</h2>
         <div className="base64-tool-controls">

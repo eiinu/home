@@ -1,6 +1,7 @@
 import React, { useState, useRef } from 'react'
 import './ClipboardManager.css'
-import { useToast } from './Toast'
+import useToast from './useToast'
+import { ToastContainer } from './Toast'
 
 interface ClipboardData {
   type: string
@@ -17,7 +18,7 @@ const ClipboardManager: React.FC = () => {
   const [writeAsHtml, setWriteAsHtml] = useState(false)
   const [isWriting, setIsWriting] = useState(false)
   const pasteAreaRef = useRef<HTMLDivElement>(null)
-  const { showError, showSuccess, showWarning, ToastContainer } = useToast()
+  const { showError, showSuccess, showWarning, messages, removeToast } = useToast()
 
   // 读取剪贴板内容
   const readClipboard = async () => {
@@ -288,7 +289,7 @@ const ClipboardManager: React.FC = () => {
         </button>
       </div>
     </div>
-    <ToastContainer />
+      <ToastContainer messages={messages} onRemove={removeToast} />
     </>
   )
 }

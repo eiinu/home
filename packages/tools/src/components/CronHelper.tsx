@@ -2,7 +2,8 @@ import React, { useCallback, useMemo, useState, useEffect } from 'react'
 import './CronHelper.css'
 import CodeMirrorEditor from './CodeMirrorEditor'
 import Button from './Button'
-import { useToast } from './Toast'
+import useToast from './useToast'
+import { ToastContainer } from './Toast'
 
 interface CronHelperProps {
   theme?: 'light' | 'dark' | 'auto'
@@ -87,7 +88,7 @@ const CronHelper: React.FC<CronHelperProps> = ({ theme = 'auto' }) => {
   const [expr, setExpr] = useState('* * * * *')
   const [parts, setParts] = useState<CronParts | null>(() => parseCron(expr))
   const [nextRuns, setNextRuns] = useState<string[]>([])
-  const { showSuccess, showError, showInfo, ToastContainer } = useToast()
+  const { showSuccess, showError, showInfo, messages, removeToast } = useToast()
 
   useEffect(() => {
     setParts(parseCron(expr))
@@ -121,7 +122,7 @@ const CronHelper: React.FC<CronHelperProps> = ({ theme = 'auto' }) => {
 
   return (
     <div className="cron-helper">
-      <ToastContainer />
+      <ToastContainer messages={messages} onRemove={removeToast} />
       <div className="cron-helper-header">
         <h2 className="cron-helper-title">Cron 表达式助手</h2>
         <div className="cron-helper-mode">

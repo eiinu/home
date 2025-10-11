@@ -3,7 +3,7 @@ import './Workspace.css'
 import CategoryDock from './CategoryDock'
 import ToolsList from './ToolsList'
 import { useTheme } from './ThemeProvider'
-import { JsonFormatter, HtmlFormatter, SseParser, KeyboardListener, ClipboardManager, Button, Base64Tool, RegexTester } from '@eiinu/tools'
+import { JsonFormatter, HtmlFormatter, SseParser, KeyboardListener, ClipboardManager, Button, Base64Tool, RegexTester, CronHelper } from '@eiinu/tools'
 import { BorderEditor, ColorTool } from '@eiinu/creative'
 // import { Game2048 } from '@eiinu/games' // 暂时关闭游戏功能
 
@@ -21,6 +21,7 @@ const Workspace: React.FC = () => {
     clipboardManager: <ClipboardManager />,
     base64Tool: <Base64Tool />,
     regexTester: <RegexTester />,
+    cronHelper: <CronHelper />,
     colorTool: <ColorTool />,
     borderEditor: <BorderEditor />,
     // game2048: <Game2048 /> // 暂时关闭游戏功能
@@ -77,6 +78,12 @@ const Workspace: React.FC = () => {
         icon: '🔍',
         label: '正则测试器',
         description: '正则表达式测试和验证'
+      },
+      {
+        id: 'cron-helper',
+        icon: '⏱️',
+        label: 'Cron 助手',
+        description: '生成与解释 Cron 表达式'
       },
       {
         id: 'sse-parser',
@@ -164,6 +171,8 @@ const Workspace: React.FC = () => {
         return componentInstances.base64Tool
       case 'regex-tester':
         return componentInstances.regexTester
+      case 'cron-helper':
+        return componentInstances.cronHelper
       case 'color-tool':
         return componentInstances.colorTool
       case 'sse-parser':

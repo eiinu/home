@@ -2,17 +2,20 @@
   display: flex;
   flex-direction: column;
   gap: 16px;
+  padding: 24px;
 }
 
 .cron-helper-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  flex-wrap: wrap;
+  gap: 16px;
 }
 
 .cron-helper-title {
   margin: 0;
-  font-size: 18px;
+  font-size: 24px;
   font-weight: 600;
 }
 
@@ -99,4 +102,16 @@
 [data-theme="dark"] .section-subtitle,
 [data-theme="dark"] .field-row-label {
   color: #E5E5E7;
+}
+
+/* 响应式设计 */
+@media (max-width: 768px) {
+  .cron-helper {
+    padding: 16px;
+  }
+
+  .cron-helper-header {
+    flex-direction: column;
+    align-items: stretch;
+  }
 }

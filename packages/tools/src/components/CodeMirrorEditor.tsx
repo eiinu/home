@@ -107,7 +107,7 @@ const CodeMirrorEditor = forwardRef<CodeMirrorEditorRef, CodeMirrorEditorProps>(
     getView: () => viewRef.current
   }));
 
-  // 初始化和更新编辑器
+  // 初始化编辑器（不因 value 变化而重建）
   useEffect(() => {
     if (!editorRef.current) return;
 
@@ -193,7 +193,19 @@ const CodeMirrorEditor = forwardRef<CodeMirrorEditorRef, CodeMirrorEditorProps>(
     return () => {
       view.destroy();
     };
-  }, [value, language, theme, readOnly, showLineNumbers, showFoldGutter, placeholder]);
+  }, [language, readOnly, showLineNumbers, showFoldGutter]);
+
+  // 同步外部传入的 value 到编辑器，但不重建视图
+  useEffect(() => {
+    const view = viewRef.current;
+    if (!view) return;
+    const currentDoc = view.state.doc.toString();
+    if (value !== currentDoc) {
+      view.dispatch({
+        changes: { from: 0, to: currentDoc.length, insert: value }
+      });
+    }
+  }, [value]);
 
   // 监听主题变化
   useEffect(() => {

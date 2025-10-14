@@ -76,7 +76,7 @@ const XmlFormatter: React.FC<XmlFormatterProps> = ({ theme = 'auto' }) => {
       let result = '';
 
       // 先规范标签间的空白（不影响文本节点内部的内容）
-      let normalized = xml.replace(/\r?\n/g, '').replace(/>\s+</g, '><');
+      const normalized = xml.replace(/\r?\n/g, '').replace(/>\s+</g, '><');
 
       // 令牌化：捕获各种标签、注释、CDATA 与处理指令
       const tokenRegex = /(<\/?[^>]+>|<\?[^>]+\?>|<!\[CDATA\[[\s\S]*?\]\]>|<!--[\s\S]*?-->|<![^>]+>)/;
@@ -89,7 +89,7 @@ const XmlFormatter: React.FC<XmlFormatterProps> = ({ theme = 'auto' }) => {
           // 结束标签
           indent = Math.max(0, indent - indentSize);
           result += ' '.repeat(indent) + token + (i < tokens.length - 1 ? '\n' : '');
-        } else if (/^<[^!?][^>]*[^\/]>$/.test(token)) {
+        } else if (/^<[^!?][^>]*[^/]>$/.test(token)) {
           // 开始标签（非自闭合、非声明/注释）
           result += ' '.repeat(indent) + token + (i < tokens.length - 1 ? '\n' : '');
           indent += indentSize;

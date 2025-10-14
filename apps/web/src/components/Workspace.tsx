@@ -3,7 +3,7 @@ import './Workspace.css'
 import CategoryDock from './CategoryDock'
 import ToolsList from './ToolsList'
 import { useTheme } from './ThemeProvider'
-import { JsonFormatter, HtmlFormatter, SseParser, KeyboardListener, ClipboardManager, Button, Base64Tool, RegexTester, CronHelper } from '@eiinu/tools'
+import { JsonFormatter, HtmlFormatter, XmlFormatter, SseParser, KeyboardListener, ClipboardManager, Button, Base64Tool, RegexTester, CronHelper } from '@eiinu/tools'
 import { BorderEditor, ColorTool } from '@eiinu/creative'
 // import { Game2048 } from '@eiinu/games' // 暂时关闭游戏功能
 
@@ -16,6 +16,7 @@ const Workspace: React.FC = () => {
   const componentInstances = useMemo(() => ({
     jsonFormatter: <JsonFormatter />,
     htmlFormatter: <HtmlFormatter />,
+    xmlFormatter: <XmlFormatter />,
     sseParser: <SseParser />,
     keyboardListener: <KeyboardListener />,
     clipboardManager: <ClipboardManager />,
@@ -66,6 +67,12 @@ const Workspace: React.FC = () => {
         icon: '</>',
         label: 'HTML 工具',
         description: 'HTML 格式化和美化'
+      },
+      {
+        id: 'xml-formatter',
+        icon: '🧾',
+        label: 'XML 工具',
+        description: 'XML 格式化和美化'
       },
       {
         id: 'base64-tool',
@@ -167,6 +174,8 @@ const Workspace: React.FC = () => {
         return componentInstances.jsonFormatter
       case 'html-formatter':
         return componentInstances.htmlFormatter
+      case 'xml-formatter':
+        return componentInstances.xmlFormatter
       case 'base64-tool':
         return componentInstances.base64Tool
       case 'regex-tester':

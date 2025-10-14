@@ -1,0 +1,123 @@
+.xml-formatter {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 24px;
+  background-color: transparent;
+  overflow: hidden; /* 根容器隐藏溢出，由编辑区负责滚动 */
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+}
+
+.xml-formatter-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.xml-formatter-header h2 {
+  margin: 0;
+  font-size: 24px;
+  font-weight: 600;
+  color: var(--text-primary, #1f2937);
+}
+
+.xml-formatter.dark .xml-formatter-header h2 {
+  color: var(--text-primary-dark, #f9fafb);
+}
+
+.xml-formatter-actions {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.xml-formatter-editor {
+  flex: 1;
+  border-radius: 8px;
+  overflow: auto; /* 允许在内容较多时滚动 */
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+  min-height: 0; /* 保持在弹性布局中可收缩，避免父容器裁切 */
+}
+
+.xml-formatter.dark .xml-formatter-editor {
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.3), 0 1px 2px 0 rgba(0, 0, 0, 0.2);
+}
+
+.xml-formatter-info {
+  display: flex;
+  gap: 24px;
+  font-size: 14px;
+  color: var(--text-secondary, #6b7280);
+  padding: 8px 0;
+}
+
+.xml-formatter.dark .xml-formatter-info {
+  color: var(--text-secondary-dark, #9ca3af);
+}
+
+.xml-formatter-info span {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+/* 响应式设计 */
+@media (max-width: 768px) {
+  .xml-formatter {
+    padding: 16px;
+  }
+  
+  .xml-formatter-header {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  
+  .xml-formatter-actions {
+    justify-content: center;
+  }
+  
+  .xml-formatter-info {
+    justify-content: center;
+    gap: 16px;
+  }
+}
+
+/* 编辑器主题适配 */
+.xml-formatter.light {
+  background-color: var(--bg-primary, #ffffff);
+}
+
+.xml-formatter.dark {
+  background-color: var(--bg-primary-dark, #111827);
+}
+
+/* 滚动条样式 */
+.xml-formatter-editor ::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+.xml-formatter-editor ::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.xml-formatter-editor ::-webkit-scrollbar-thumb {
+  background-color: rgba(156, 163, 175, 0.5);
+  border-radius: 4px;
+}
+
+.xml-formatter.dark .xml-formatter-editor ::-webkit-scrollbar-thumb {
+  background-color: rgba(75, 85, 99, 0.5);
+}
+
+.xml-formatter-editor ::-webkit-scrollbar-thumb:hover {
+  background-color: rgba(156, 163, 175, 0.8);
+}
+
+.xml-formatter.dark .xml-formatter-editor ::-webkit-scrollbar-thumb:hover {
+  background-color: rgba(75, 85, 99, 0.8);
+}

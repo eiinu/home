@@ -38,6 +38,40 @@ export const KeyboardListener: React.FC<KeyboardListenerProps> = ({ className = 
   const [eventHistory, setEventHistory] = useState<KeyEventData[]>([]);
   const [showHistory, setShowHistory] = useState(false);
 
+  // 判断是否需要阻止默认行为（浏览器/系统快捷键）
+  const shouldPreventDefault = useCallback((event: KeyboardEvent) => {
+    const { key, metaKey, ctrlKey, altKey, shiftKey } = event;
+
+    // 功能键一般用于系统/浏览器操作
+    const functionKeys = new Set([
+      'F1','F2','F3','F4','F5','F6','F7','F8','F9','F10','F11','F12'
+    ]);
+
+    // 常见的浏览器/系统快捷键（Mac ⌘ / Win Ctrl）
+    const commonShortcuts = new Set([
+      'a','c','v','x','z','y','s','p','f','r','n','o','t','w','q','h','l'
+    ]);
+
+    // 阻止 Tab 和 Escape 导致的焦点跳转或退出
+    const blockedSingleKeys = new Set(['Tab', 'Escape']);
+
+    // 如果是功能键，直接阻止
+    if (functionKeys.has(key)) return true;
+
+    // 修饰键组合（含 Cmd/Ctrl/Alt/Shift）时阻止，避免触发系统/浏览器快捷键
+    if (metaKey || ctrlKey || altKey || shiftKey) {
+      // 针对字符键：只要与修饰键组合即阻止
+      if (key.length === 1 && commonShortcuts.has(key.toLowerCase())) return true;
+      // 针对组合键：如 Shift+Tab、Ctrl+Enter 等
+      return true;
+    }
+
+    // 单独的 Tab/Escape 也阻止
+    if (blockedSingleKeys.has(key)) return true;
+
+    return false;
+  }, []);
+
   // 获取跨平台按键映射
   const getCrossPlatformMapping = useCallback((event: KeyEventData): CrossPlatformMapping | null => {
     const { key, metaKey, ctrlKey, altKey, shiftKey } = event;
@@ -100,9 +134,10 @@ export const KeyboardListener: React.FC<KeyboardListenerProps> = ({ className = 
   const handleKeyEvent = useCallback((event: KeyboardEvent, type: 'keydown' | 'keyup') => {
     if (!isListening) return;
 
-    // 阻止某些默认行为，但不影响正常使用
-    if (event.key === 'F12' || (event.metaKey && event.key === 'r')) {
-      return; // 允许开发者工具和刷新
+    // 阻止默认行为，避免触发浏览器或系统快捷键
+    if (shouldPreventDefault(event)) {
+      event.preventDefault();
+      event.stopPropagation();
     }
 
     const eventData: KeyEventData = {
@@ -124,7 +159,7 @@ export const KeyboardListener: React.FC<KeyboardListenerProps> = ({ className = 
     if (type === 'keydown' && !event.repeat) {
       setEventHistory(prev => [eventData, ...prev.slice(0, 49)]); // 保留最近50个事件
     }
-  }, [isListening]);
+  }, [isListening, shouldPreventDefault]);
 
   // 监听键盘事件
   useEffect(() => {

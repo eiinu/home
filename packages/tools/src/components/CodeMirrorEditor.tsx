@@ -30,7 +30,7 @@ export interface CodeMirrorEditorRef {
   getView: () => EditorView | null;
 }
 
-const CodeMirrorEditor = forwardRef<CodeMirrorEditorRef, CodeMirrorEditorProps>(({ 
+const CodeMirrorEditor = forwardRef<CodeMirrorEditorRef, CodeMirrorEditorProps>(({
   value,
   onChange,
   language = 'plain',
@@ -45,16 +45,6 @@ const CodeMirrorEditor = forwardRef<CodeMirrorEditorRef, CodeMirrorEditorProps>(
   const editorRef = useRef<HTMLDivElement>(null);
   const viewRef = useRef<EditorView | null>(null);
   const isDarkMode = useRef(false);
-
-  // 自定义快捷键拦截，避免触发浏览器或系统默认操作
-  const blockedKeymap = keymap.of([
-    { key: 'Mod-s', run: () => true },   // 阻止保存页面
-    { key: 'Mod-p', run: () => true },   // 阻止打印
-    { key: 'Mod-f', run: () => true },   // 阻止浏览器查找
-    { key: 'F5', run: () => true },      // 阻止刷新
-    { key: 'Shift-F5', run: () => true },
-    { key: 'Mod-r', run: () => true },   // 阻止刷新（部分浏览器可拦截）
-  ]);
 
   // 获取当前主题
   const getCurrentTheme = (): boolean => {
@@ -129,7 +119,6 @@ const CodeMirrorEditor = forwardRef<CodeMirrorEditorRef, CodeMirrorEditorProps>(
       ...(showFoldGutter ? [foldGutter()] : []),
       history(),
       keymap.of([...defaultKeymap, ...historyKeymap]),
-      blockedKeymap,
       getLanguageExtension(language),
       EditorView.updateListener.of((update) => {
         if (update.docChanged && onChange) {
@@ -234,7 +223,6 @@ const CodeMirrorEditor = forwardRef<CodeMirrorEditorRef, CodeMirrorEditorProps>(
             ...(showFoldGutter ? [foldGutter()] : []),
             history(),
             keymap.of([...defaultKeymap, ...historyKeymap]),
-            blockedKeymap,
             getLanguageExtension(language),
             EditorView.updateListener.of((update) => {
               if (update.docChanged && onChange) {

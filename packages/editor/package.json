@@ -23,6 +23,7 @@
     "lint": "eslint ."
   },
   "dependencies": {
+    "@eiinu/tools": "workspace:*",
     "markdown-it": "^14.1.0",
     "@codemirror/view": "^6.34.0",
     "@codemirror/state": "^6.4.1",

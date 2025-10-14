@@ -133,6 +133,9 @@ importers:
       '@codemirror/view':
         specifier: ^6.34.0
         version: 6.38.3
+      '@eiinu/tools':
+        specifier: workspace:*
+        version: link:../tools
       markdown-it:
         specifier: ^14.1.0
         version: 14.1.0

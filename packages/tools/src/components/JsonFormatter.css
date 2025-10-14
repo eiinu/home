@@ -145,14 +145,14 @@
   min-height: 0;
   background-color: var(--panel-bg);
   position: relative;
-  overflow: hidden;
+  overflow: auto; /* 允许编辑区在内容超长时滚动 */
 }
 
 .editor {
   height: 100%;
   width: 100%;
   min-height: 300px;
-  overflow: auto;
+  overflow: visible; /* 由容器负责滚动，避免双重滚动条 */
 }
 
 

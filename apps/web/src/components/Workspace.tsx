@@ -5,7 +5,7 @@ import ToolsList from './ToolsList'
 import { useTheme } from './ThemeProvider'
 import { JsonFormatter, HtmlFormatter, XmlFormatter, SseParser, KeyboardListener, ClipboardManager, Button, Base64Tool, RegexTester, CronHelper } from '@eiinu/tools'
 import { BorderEditor, ColorTool } from '@eiinu/creative'
-import { MarkdownRenderer } from '@eiinu/editor'
+import { MarkdownRenderer, RemarkRenderer } from '@eiinu/editor'
 // import { Game2048 } from '@eiinu/games' // 暂时关闭游戏功能
 
 const Workspace: React.FC = () => {
@@ -27,6 +27,7 @@ const Workspace: React.FC = () => {
     colorTool: <ColorTool />,
     borderEditor: <BorderEditor />,
     markdownRenderer: <MarkdownRenderer />,
+    remarkRenderer: <RemarkRenderer />,
     // game2048: <Game2048 /> // 暂时关闭游戏功能
   }), [])
 
@@ -134,10 +135,16 @@ const Workspace: React.FC = () => {
     ],
     editor: [
       {
-        id: 'markdown-renderer',
+        id: 'markdown-it',
         icon: '📝',
-        label: 'Markdown 渲染器',
-        description: 'Markdown 编辑与预览'
+        label: 'Markdown-it',
+        description: '基于 markdown-it 的 Markdown 编辑与预览'
+      },
+      {
+        id: 'remarkjs',
+        icon: '🪧',
+        label: 'RemarkJS',
+        description: '基于 remarkjs 的 Markdown 编辑与 AST 展示'
       }
     ],
     // 暂时关闭游戏功能
@@ -207,8 +214,10 @@ const Workspace: React.FC = () => {
         return componentInstances.clipboardManager
       case 'border-editor':
         return componentInstances.borderEditor
-      case 'markdown-renderer':
+      case 'markdown-it':
         return componentInstances.markdownRenderer
+      case 'remarkjs':
+        return componentInstances.remarkRenderer
       // 暂时关闭游戏功能
       // case 'game-2048':
       //   return componentInstances.game2048

@@ -12,6 +12,12 @@
     "allowImportingTsExtensions": true,
     "verbatimModuleSyntax": true,
     "moduleDetection": "force",
+    "baseUrl": ".",
+    "paths": {
+      "@eiinu/editor": ["../../packages/editor/src/index.ts"],
+      "@eiinu/tools": ["../../packages/tools/src/index.ts"],
+      "@eiinu/creative": ["../../packages/creative/src/index.ts"]
+    },
     "noEmit": true,
     "jsx": "react-jsx",
 

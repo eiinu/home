@@ -4,7 +4,7 @@ import MarkdownEditor from './MarkdownEditor';
 import { CodeMirrorEditor } from '@eiinu/tools';
 import MarkdownIt from 'markdown-it';
 
-interface MarkdownRendererProps {
+export interface MarkdownRendererProps {
   theme?: 'light' | 'dark' | 'auto';
 }
 
@@ -19,7 +19,7 @@ const MarkdownRenderer: React.FC<MarkdownRendererProps> = ({ theme = 'auto' }) =
     try {
       const tokens = md.parse(input, {});
       return JSON.stringify(tokens, null, 2);
-    } catch (e) {
+    } catch {
       return '[]';
     }
   }, [md, input]);
@@ -27,7 +27,7 @@ const MarkdownRenderer: React.FC<MarkdownRendererProps> = ({ theme = 'auto' }) =
   return (
     <div className="markdown-renderer">
       <div className="markdown-header">
-        <h2>Markdown 编辑器</h2>
+        <h2>Markdown-it</h2>
         <div className="markdown-actions">
           <button className={`tab-btn ${mode === 'html' ? 'active' : ''}`} onClick={() => setMode('html')}>预览 HTML</button>
           <button className={`tab-btn ${mode === 'tokens' ? 'active' : ''}`} onClick={() => setMode('tokens')}>查看 Tokens</button>

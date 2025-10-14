@@ -5,6 +5,7 @@ import ToolsList from './ToolsList'
 import { useTheme } from './ThemeProvider'
 import { JsonFormatter, HtmlFormatter, XmlFormatter, SseParser, KeyboardListener, ClipboardManager, Button, Base64Tool, RegexTester, CronHelper } from '@eiinu/tools'
 import { BorderEditor, ColorTool } from '@eiinu/creative'
+import { MarkdownRenderer } from '@eiinu/editor'
 // import { Game2048 } from '@eiinu/games' // 暂时关闭游戏功能
 
 const Workspace: React.FC = () => {
@@ -25,6 +26,7 @@ const Workspace: React.FC = () => {
     cronHelper: <CronHelper />,
     colorTool: <ColorTool />,
     borderEditor: <BorderEditor />,
+    markdownRenderer: <MarkdownRenderer />,
     // game2048: <Game2048 /> // 暂时关闭游戏功能
   }), [])
 
@@ -39,6 +41,11 @@ const Workspace: React.FC = () => {
       id: 'creative',
       icon: '🎨',
       label: '创意工坊'
+    },
+    {
+      id: 'editor',
+      icon: '📝',
+      label: '编辑器'
     },
     // 暂时关闭游戏功能
     // {
@@ -125,6 +132,14 @@ const Workspace: React.FC = () => {
         description: '颜色选择器和格式转换'
       }
     ],
+    editor: [
+      {
+        id: 'markdown-renderer',
+        icon: '📝',
+        label: 'Markdown 渲染器',
+        description: 'Markdown 编辑与预览'
+      }
+    ],
     // 暂时关闭游戏功能
     // games: [
     //   {
@@ -192,6 +207,8 @@ const Workspace: React.FC = () => {
         return componentInstances.clipboardManager
       case 'border-editor':
         return componentInstances.borderEditor
+      case 'markdown-renderer':
+        return componentInstances.markdownRenderer
       // 暂时关闭游戏功能
       // case 'game-2048':
       //   return componentInstances.game2048

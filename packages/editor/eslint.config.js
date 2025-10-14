@@ -4,11 +4,16 @@ import reactHooks from 'eslint-plugin-react-hooks'
 import reactRefresh from 'eslint-plugin-react-refresh'
 import tseslint from 'typescript-eslint'
 import { defineConfig, globalIgnores } from 'eslint/config'
+import { fileURLToPath } from 'node:url'
+import { dirname } from 'node:path'
+
+const __filename = fileURLToPath(import.meta.url)
+const __dirname = dirname(__filename)
 
 export default defineConfig([
   globalIgnores(['dist']),
   {
-    files: ['src/**/*.{ts,tsx}'],
+    files: ['**/*.{ts,tsx}'],
     extends: [
       js.configs.recommended,
       tseslint.configs.recommended,
@@ -19,24 +24,8 @@ export default defineConfig([
       ecmaVersion: 2020,
       globals: globals.browser,
       parserOptions: {
-        project: './tsconfig.app.json',
-        tsconfigRootDir: import.meta.dirname,
-      },
-    },
-  },
-  // 为 Node 端配置文件单独启用 typed linting，使用 tsconfig.node.json
-  {
-    files: ['vite.config.ts'],
-    extends: [
-      js.configs.recommended,
-      tseslint.configs.recommended,
-    ],
-    languageOptions: {
-      ecmaVersion: 2020,
-      globals: globals.node,
-      parserOptions: {
-        project: './tsconfig.node.json',
-        tsconfigRootDir: import.meta.dirname,
+        tsconfigRootDir: __dirname,
+        project: ['./tsconfig.app.json'],
       },
     },
   },

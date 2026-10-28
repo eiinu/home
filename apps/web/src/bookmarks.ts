@@ -8,6 +8,7 @@ export type Bookmark = {
   favorite: boolean;
   color: string;
   icon?: string;
+  iconUrl?: string;
 };
 const rows = [
   ["github", "GitHub", "https://github.com", "代码与协作", 0, true, "#24292f"],
@@ -161,6 +162,27 @@ export const defaults: Bookmark[] = rows.map(
     icon: id,
   }),
 );
+export const iconChoices = defaults.map((item) => ({
+  value: item.icon!,
+  label: item.name,
+}));
+export function validateIconUrl(value: string): string {
+  const input = value.trim();
+  if (
+    /^data:image\/(png|jpeg|webp);base64,[A-Za-z0-9+/]+={0,2}$/.test(input) &&
+    input.length <= 180000
+  )
+    return input;
+  let url: URL;
+  try {
+    url = new URL(input);
+  } catch {
+    throw new Error("请输入有效的 HTTPS 图片地址，或上传图片。");
+  }
+  if (url.protocol !== "https:" || url.username || url.password)
+    throw new Error("请使用 HTTPS 图片地址，或上传 PNG、JPEG、WebP 图片。");
+  return url.href;
+}
 export const storageKey = "eiinu-navigation-v1";
 export function websiteUrl(value: string) {
   const input = value.trim();
@@ -174,43 +196,49 @@ export function websiteUrl(value: string) {
     throw new Error("请输入有效的网站地址");
   return url.href;
 }
+export function parseBookmarks(stored: unknown): Bookmark[] {
+  const oldCategories: Record<string, string> = {
+    效率工具: categories[0],
+    设计灵感: categories[0],
+    开发世界: categories[0],
+  };
+  if (
+    Array.isArray(stored) &&
+    stored.every(
+      (item) =>
+        item &&
+        typeof item.id === "string" &&
+        typeof item.name === "string" &&
+        typeof item.url === "string" &&
+        typeof item.description === "string" &&
+        (categories.includes(item.category) ||
+          Object.hasOwn(oldCategories, item.category)) &&
+        typeof item.favorite === "boolean" &&
+        /^#[\da-f]{6}$/i.test(item.color) &&
+        (!item.icon || /^[a-z]+$/.test(item.icon)) &&
+        (item.iconUrl === undefined || typeof item.iconUrl === "string") &&
+        (item.icon !== "image" || Boolean(item.iconUrl)),
+    )
+  ) {
+    return stored.map((item) => ({
+      ...item,
+      url: websiteUrl(item.url),
+      category: oldCategories[item.category] || item.category,
+      ...(item.iconUrl ? { iconUrl: validateIconUrl(item.iconUrl) } : {}),
+      icon:
+        item.icon ||
+        defaults.find((defaultItem) => defaultItem.id === item.id)?.icon,
+    }));
+  }
+  throw new Error("收藏数据格式不正确");
+}
 export function loadBookmarks(): Bookmark[] {
   try {
     const stored: unknown = JSON.parse(
       localStorage.getItem(storageKey) || "null",
     );
-    const oldCategories: Record<string, string> = {
-      效率工具: categories[0],
-      设计灵感: categories[0],
-      开发世界: categories[0],
-    };
-    if (
-      Array.isArray(stored) &&
-      stored.every(
-        (item) =>
-          item &&
-          typeof item.id === "string" &&
-          typeof item.name === "string" &&
-          typeof item.url === "string" &&
-          typeof item.description === "string" &&
-          (categories.includes(item.category) ||
-            item.category in oldCategories) &&
-          typeof item.favorite === "boolean" &&
-          /^#[\da-f]{6}$/i.test(item.color) &&
-          (!item.icon || /^[a-z]+$/.test(item.icon)),
-      )
-    ) {
-      return stored.map((item) => ({
-        ...item,
-        url: websiteUrl(item.url),
-        category: oldCategories[item.category] || item.category,
-        icon:
-          item.icon ||
-          defaults.find((defaultItem) => defaultItem.id === item.id)?.icon,
-      }));
-    }
+    return parseBookmarks(stored);
   } catch {
-    /* Invalid or unavailable storage falls back to the curated defaults. */
+    return defaults;
   }
-  return defaults;
 }

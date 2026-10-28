@@ -5,7 +5,15 @@ import "@eiinu/creative/style.css";
 import "@eiinu/editor/style.css";
 import Workspace from "./components/Workspace";
 import { ThemeProvider, useTheme } from "./components/ThemeProvider";
-import { categories, loadBookmarks, storageKey, websiteUrl } from "./bookmarks";
+import {
+  categories,
+  loadBookmarks,
+  storageKey,
+  websiteUrl,
+  iconChoices,
+  validateIconUrl,
+  parseBookmarks,
+} from "./bookmarks";
 import type { Bookmark } from "./bookmarks";
 import "./App.css";
 
@@ -67,18 +75,29 @@ function Icon({ name }: { name: IconName }) {
   );
 }
 function SiteIcon({ item }: { item: Bookmark }) {
-  const [failed, setFailed] = useState(false);
+  const [failedSource, setFailedSource] = useState<string | null>(null);
+  let source: string | undefined;
+  if (item.icon === "image") {
+    try {
+      source = validateIconUrl(item.iconUrl || "");
+    } catch {
+      /* Keep the letter fallback while an address is incomplete. */
+    }
+  } else if (item.icon && item.icon !== "letter")
+    source = `/icons/${item.icon}.svg`;
   return (
     <span
       className="bookmark-icon"
       aria-hidden="true"
       style={{ color: item.color }}
     >
-      {item.icon && !failed ? (
+      {source && source !== failedSource ? (
         <img
-          src={`/icons/${item.icon}.svg`}
+          key={source}
+          src={source}
           alt=""
-          onError={() => setFailed(true)}
+          referrerPolicy="no-referrer"
+          onError={() => setFailedSource(source)}
         />
       ) : (
         <span className="icon-fallback">{item.name.slice(0, 1)}</span>
@@ -86,6 +105,7 @@ function SiteIcon({ item }: { item: Bookmark }) {
     </span>
   );
 }
+
 const engines = {
   Google: "https://www.google.com/search",
   Bing: "https://www.bing.com/search",
@@ -99,6 +119,7 @@ const blank = {
   category: categories[0],
   favorite: true,
   color: "#718c76",
+  icon: "letter",
 };
 function Homepage() {
   const { isDark, setTheme } = useTheme();
@@ -116,6 +137,9 @@ function Homepage() {
   const [now, setNow] = useState(() => new Date());
   const inputRef = useRef<HTMLInputElement>(null);
   const dialogRef = useRef<HTMLDialogElement>(null);
+  const iconFileRef = useRef<HTMLInputElement>(null);
+  const backupRef = useRef<HTMLInputElement>(null);
+  const [backupMessage, setBackupMessage] = useState("");
   const returnFocus = useRef<HTMLElement | null>(null);
   useEffect(() => {
     const timer = setInterval(() => setNow(new Date()), 60000);
@@ -126,14 +150,6 @@ function Homepage() {
       window.removeEventListener("hashchange", onHash);
     };
   }, []);
-  useEffect(() => {
-    try {
-      localStorage.setItem(storageKey, JSON.stringify(bookmarks));
-      setStorageError(false);
-    } catch {
-      setStorageError(true);
-    }
-  }, [bookmarks]);
   useEffect(() => {
     if (editing !== null) dialogRef.current?.showModal();
     else {
@@ -162,6 +178,16 @@ function Homepage() {
     setError("");
     setEditing(item?.id || "new");
   }
+  function persistBookmarks(next: Bookmark[]) {
+    try {
+      localStorage.setItem(storageKey, JSON.stringify(next));
+    } catch {
+      setStorageError(true);
+      throw new Error("保存失败，请导出备份后重试。");
+    }
+    setStorageError(false);
+    setBookmarks(next);
+  }
   function save(event: FormEvent) {
     event.preventDefault();
     try {
@@ -170,20 +196,69 @@ function Homepage() {
         setError("请填写网站名称");
         return;
       }
+      if (form.icon === "image") validateIconUrl(form.iconUrl || "");
       const item: Bookmark = {
         ...form,
         name: form.name.trim(),
         url,
         id: editing === "new" ? crypto.randomUUID() : editing!,
       };
-      setBookmarks((items) =>
+      persistBookmarks(
         editing === "new"
-          ? [...items, item]
-          : items.map((old) => (old.id === editing ? item : old)),
+          ? [...bookmarks, item]
+          : bookmarks.map((old) => (old.id === editing ? item : old)),
       );
       setEditing(null);
-    } catch {
-      setError("请输入有效的网站地址，例如 https://example.com");
+    } catch (error) {
+      setError(error instanceof Error ? error.message : "保存失败，请重试。");
+    }
+  }
+  async function uploadIcon(file: File) {
+    setError("");
+    if (!["image/png", "image/jpeg", "image/webp"].includes(file.type)) {
+      setError("请选择 PNG、JPEG 或 WebP 图片。");
+      return;
+    }
+    if (file.size > 131072) {
+      setError("图标图片需小于 128 KB。");
+      return;
+    }
+    const reader = new FileReader();
+    reader.onload = () => {
+      if (typeof reader.result === "string")
+        setForm((current) => ({
+          ...current,
+          icon: "image",
+          iconUrl: reader.result as string,
+        }));
+    };
+    reader.onerror = () => setError("图片读取失败，请重试。");
+    reader.readAsDataURL(file);
+  }
+  function exportBookmarks() {
+    const url = URL.createObjectURL(
+      new Blob([JSON.stringify(bookmarks, null, 2)], {
+        type: "application/json",
+      }),
+    );
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = "eiinu-bookmarks.json";
+    link.click();
+    URL.revokeObjectURL(url);
+  }
+  async function importBackup(file: File) {
+    try {
+      if (file.size > 2097152) throw new Error("备份文件超过 2 MB。");
+      const incoming = parseBookmarks(JSON.parse(await file.text()));
+      const merged = new Map(bookmarks.map((item) => [item.id, item]));
+      for (const item of incoming) merged.set(item.id, item);
+      const next = [...merged.values()];
+      localStorage.setItem(storageKey, JSON.stringify(next));
+      setBookmarks(next);
+      setBackupMessage("");
+    } catch (error) {
+      setBackupMessage(error instanceof Error ? error.message : "导入失败。");
     }
   }
   function search(event: FormEvent) {
@@ -306,6 +381,27 @@ function Homepage() {
           {storageError && (
             <p className="storage-warning" role="status">
               浏览器存储不可用，修改暂时无法保存。
+            </p>
+          )}
+          <div className="collection-actions">
+            <button onClick={() => backupRef.current?.click()}>导入备份</button>
+            <button onClick={exportBookmarks}>导出备份</button>
+            <input
+              type="file"
+              hidden
+              ref={backupRef}
+              accept=".json,application/json"
+              aria-label="选择收藏备份"
+              onChange={(event) => {
+                const file = event.target.files?.[0];
+                if (file) void importBackup(file);
+                event.target.value = "";
+              }}
+            />
+          </div>
+          {backupMessage && (
+            <p className="form-error" role="alert">
+              {backupMessage}
             </p>
           )}
           <section
@@ -470,6 +566,76 @@ function Homepage() {
               placeholder="一句话介绍这个网站"
             />
           </label>
+          <div className="icon-editor">
+            <div className="icon-preview">
+              <SiteIcon
+                item={{ ...form, id: "preview", name: form.name || "网站" }}
+              />
+            </div>
+            <label>
+              图标
+              <select
+                aria-label="图标"
+                value={form.icon || "letter"}
+                onChange={(event) => {
+                  setError("");
+                  setForm({
+                    ...form,
+                    icon: event.target.value,
+                    iconUrl: undefined,
+                  });
+                }}
+              >
+                <option value="letter">名称首字</option>
+                <optgroup label="网站图标">
+                  {iconChoices.map((icon) => (
+                    <option key={icon.value} value={icon.value}>
+                      {icon.label}
+                    </option>
+                  ))}
+                </optgroup>
+                <option value="image">自定义图片</option>
+              </select>
+            </label>
+          </div>
+          {form.icon === "image" && (
+            <div className="custom-icon-fields">
+              <label>
+                图片地址
+                <input
+                  type="url"
+                  value={
+                    form.iconUrl?.startsWith("data:") ? "" : form.iconUrl || ""
+                  }
+                  onChange={(event) =>
+                    setForm({ ...form, iconUrl: event.target.value })
+                  }
+                  placeholder="https://example.com/icon.png"
+                />
+              </label>
+              <button
+                type="button"
+                className="icon-upload"
+                onClick={() => iconFileRef.current?.click()}
+              >
+                {form.iconUrl?.startsWith("data:")
+                  ? "更换已上传图片"
+                  : "上传图片"}
+              </button>
+              <input
+                ref={iconFileRef}
+                type="file"
+                hidden
+                accept="image/png,image/jpeg,image/webp"
+                aria-label="上传图标文件"
+                onChange={(event) => {
+                  const file = event.target.files?.[0];
+                  if (file) void uploadIcon(file);
+                  event.target.value = "";
+                }}
+              />
+            </div>
+          )}
           <div className="form-columns">
             <label>
               分类
@@ -484,16 +650,18 @@ function Homepage() {
                 ))}
               </select>
             </label>
-            <label>
-              图标颜色
-              <input
-                type="color"
-                value={form.color}
-                onChange={(event) =>
-                  setForm({ ...form, color: event.target.value })
-                }
-              />
-            </label>
+            {(!form.icon || form.icon === "letter") && (
+              <label>
+                图标颜色
+                <input
+                  type="color"
+                  value={form.color}
+                  onChange={(event) =>
+                    setForm({ ...form, color: event.target.value })
+                  }
+                />
+              </label>
+            )}
           </div>
           <label className="checkbox-label">
             <input
@@ -516,10 +684,16 @@ function Homepage() {
                 type="button"
                 className="delete-button"
                 onClick={() => {
-                  setBookmarks((items) =>
-                    items.filter((item) => item.id !== editing),
-                  );
-                  setEditing(null);
+                  try {
+                    persistBookmarks(
+                      bookmarks.filter((item) => item.id !== editing),
+                    );
+                    setEditing(null);
+                  } catch (error) {
+                    setError(
+                      error instanceof Error ? error.message : "删除失败。",
+                    );
+                  }
                 }}
               >
                 删除网站

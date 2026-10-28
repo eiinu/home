@@ -161,11 +161,6 @@ const XmlFormatter: React.FC<XmlFormatterProps> = ({ theme = 'auto' }) => {
         </div>
       </div>
 
-      <div className="xml-formatter-info">
-        <span>支持 CDATA、注释与处理指令</span>
-        <span>保留文本节点内的空白</span>
-      </div>
-
       <div className="xml-formatter-editor">
         <CodeMirrorEditor
           value={input}

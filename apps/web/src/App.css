@@ -40,11 +40,7 @@
   letter-spacing: -3px;
   padding-right: 3px;
 }
-.home-brand > span:last-child {
-  font-size: 10px;
-  letter-spacing: 4px;
-  color: var(--ink);
-}
+
 .header-actions {
   display: flex;
   align-items: center;
@@ -99,12 +95,7 @@
   line-height: 1.5;
   margin: 18px 0 8px;
 }
-.home-intro > p {
-  font-size: 17px;
-  letter-spacing: 1px;
-  color: var(--secondary);
-  margin: 0;
-}
+
 .home-search {
   max-width: 820px;
   height: 69px;
@@ -222,14 +213,7 @@
   margin: 0;
   line-height: 1.5;
 }
-.section-heading h2 > span {
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-  font-size: 10px;
-  letter-spacing: 3px;
-  color: var(--secondary);
-  margin-left: 19px;
-  vertical-align: middle;
-}
+
 .section-heading > button {
   display: flex;
   align-items: center;
@@ -360,12 +344,7 @@
   font-size: 21px;
   margin-bottom: 15px;
 }
-.directory-section h2 > span {
-  font:
-    21px Georgia,
-    serif;
-  color: var(--accent);
-}
+
 .directory-links {
   display: flex;
   flex-direction: column;
@@ -406,14 +385,7 @@
   font-weight: 400;
   line-height: 1.4;
 }
-.bookmark-text small {
-  color: var(--secondary);
-  font-size: 12px;
-  line-height: 1.5;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
+
 .directory-item > a > svg {
   width: 15px;
   height: 15px;
@@ -441,32 +413,7 @@
   font-size: 12px;
   padding: 12px 7px;
 }
-.home-footer {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 20px;
-  color: var(--secondary);
-  font-size: 11px;
-  padding: 32px 0 25px;
-}
-.home-footer > span:first-child {
-  font:
-    italic 14px Georgia,
-    serif;
-}
-.home-footer > span:last-child {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  letter-spacing: 1px;
-}
-.home-footer i {
-  width: 6px;
-  height: 6px;
-  background: var(--accent);
-  border-radius: 50%;
-}
+
 .storage-warning {
   color: #b15d4f;
   font-size: 12px;
@@ -633,9 +580,6 @@
   .directory-links {
     gap: 7px;
   }
-  .home-footer {
-    padding-top: 38px;
-  }
 }
 @media (max-width: 1000px) {
   .header-actions {
@@ -650,9 +594,7 @@
   .home-search {
     max-width: 700px;
   }
-  .bookmark-text small {
-    font-size: 11px;
-  }
+
   .directory-item > a {
     gap: 12px;
   }
@@ -669,9 +611,7 @@
     padding: 0 6%;
     gap: 12px;
   }
-  .home-brand > span:last-child {
-    display: none;
-  }
+
   .brand-letter {
     font-size: 33px;
   }
@@ -710,9 +650,7 @@
     margin: 18px 0 8px;
     white-space: nowrap;
   }
-  .home-intro > p {
-    font-size: 13px;
-  }
+
   .home-search {
     height: 59px;
     padding: 6px 6px 6px 17px;
@@ -747,11 +685,7 @@
   .section-heading h2 {
     font-size: 18px;
   }
-  .section-heading h2 > span {
-    font-size: 8px;
-    letter-spacing: 2px;
-    margin-left: 9px;
-  }
+
   .favorites-grid {
     grid-template-columns: repeat(4, minmax(0, 1fr));
     gap: 24px 10px;
@@ -776,9 +710,7 @@
     font-size: 20px;
     margin-bottom: 12px;
   }
-  .directory-section h2 > span {
-    font-size: 19px;
-  }
+
   .directory-links {
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -795,19 +727,12 @@
   .bookmark-text strong {
     font-size: 12px;
   }
-  .bookmark-text small {
-    font-size: 10px;
-  }
+
   .directory-item > a > svg {
     width: 12px;
     height: 12px;
   }
-  .home-footer {
-    padding-top: 33px;
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 12px;
-  }
+
   .tools-workspace {
     height: calc(100dvh - 77px);
   }
@@ -826,4 +751,11 @@
   .directory-item > a {
     transition: none !important;
   }
+}
+
+.navigation-main {
+  padding-bottom: 40px;
+}
+.directory-item > a {
+  min-height: 58px;
 }

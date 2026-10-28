@@ -156,7 +156,6 @@ const CronHelper: React.FC<CronHelperProps> = ({ theme = 'auto' }) => {
         <div className="cron-section">
           <div className="section-header">
             <h3 className="section-title">语义解析</h3>
-            <div className="section-subtitle">快速理解每个段位含义</div>
           </div>
 
           {!parts && (

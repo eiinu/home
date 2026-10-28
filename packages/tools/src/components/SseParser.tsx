@@ -281,9 +281,6 @@ export const SseParser: React.FC<SseParserProps> = ({ className = '' }) => {
               onChange={(e) => setPath(e.target.value)}
               placeholder="例如: content 或 data.message.text 或 items[0].name"
             />
-            <div className="path-help">
-              输入对象路径来提取特定字段的值，支持数组索引语法（如 data[0].name），多个事件中的值会自动拼接
-            </div>
           </div>
         </div>
 

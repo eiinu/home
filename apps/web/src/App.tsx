@@ -220,7 +220,6 @@ function Homepage() {
       <header className="home-header">
         <a className="home-brand" href="#home" aria-label="Eiinu 导航主页">
           <span className="brand-letter">e.</span>
-          <span>EIINU / HOME</span>
         </a>
         <nav className="header-actions" aria-label="主导航">
           <button
@@ -256,7 +255,6 @@ function Homepage() {
               }).format(now)}
             </time>
             <h1 id="home-title">留一点时间，给喜欢的事。</h1>
-            <p>你的日常，从这里开始。</p>
             <form
               className="home-search"
               action={engines[engine]}
@@ -315,9 +313,7 @@ function Homepage() {
             aria-labelledby="favorites-title"
           >
             <div className="section-heading">
-              <h2 id="favorites-title">
-                常去的地方 <span>FAVORITES</span>
-              </h2>
+              <h2 id="favorites-title">常去的地方</h2>
               <button
                 className={managing ? "editing-active" : ""}
                 onClick={() => setManaging(!managing)}
@@ -360,24 +356,19 @@ function Homepage() {
                 key={name}
                 aria-labelledby={`category-${index}`}
               >
-                <h2 id={`category-${index}`}>
-                  <span>0{index + 1}</span>
-                  {name}
-                </h2>
+                <h2 id={`category-${index}`}>{name}</h2>
                 <div className="directory-links">
                   {items.map((item) => (
                     <div className="directory-item" key={item.id}>
                       <a
                         href={item.url}
+                        title={item.description || undefined}
                         target="_blank"
                         rel="noopener noreferrer"
                       >
                         <SiteIcon item={item} />
                         <span className="bookmark-text">
                           <strong>{item.name}</strong>
-                          <small>
-                            {item.description || new URL(item.url).hostname}
-                          </small>
                         </span>
                         {!managing && <Icon name="arrow" />}
                       </a>
@@ -411,13 +402,6 @@ function Homepage() {
               </section>
             ))}
           </div>
-          <footer className="home-footer">
-            <span>Make room for what matters.</span>
-            <span>
-              <i />
-              只收藏，真正喜欢的。
-            </span>
-          </footer>
         </main>
       ) : (
         <main className="tools-workspace">

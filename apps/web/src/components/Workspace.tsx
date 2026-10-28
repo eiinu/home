@@ -206,13 +206,6 @@ const Workspace: React.FC = () => {
   const currentTools =
     toolsConfig[activeCategory as keyof typeof toolsConfig] || [];
   const currentTool = currentTools.find((tool) => tool.id === activeTool);
-  const activeGroup = categories.find(
-    (category) => category.id === activeCategory,
-  );
-  const toolNumber =
-    Object.values(toolsConfig)
-      .flat()
-      .findIndex((tool) => tool.id === activeTool) + 1;
 
   // 渲染工具内容
   const renderToolContent = () => {
@@ -250,7 +243,6 @@ const Workspace: React.FC = () => {
         return (
           <div className="settings-panel">
             <div className="settings-section">
-              <h3>主题设置</h3>
               <div className="theme-options">
                 <Button
                   variant={theme === "light" ? "primary" : "secondary"}
@@ -290,12 +282,7 @@ const Workspace: React.FC = () => {
   return (
     <div className="workspace workbench">
       <aside className="workbench-sidebar" aria-label="工具目录">
-        <a className="workbench-home" href="#home">
-          ← 导航主页
-        </a>
-        <h1>
-          我的工具<span>日常用得上的小工具。</span>
-        </h1>
+        <h1>我的工具</h1>
         <label className="tool-search">
           <span aria-hidden="true">⌕</span>
           <input
@@ -359,14 +346,9 @@ const Workspace: React.FC = () => {
                   .includes(filter.toLowerCase()),
               ) && <p className="no-tool-results">没有找到这个工具。</p>}
         </div>
-        <div className="workbench-note">
-          <span />
-          工具在浏览器内运行
-        </div>
       </aside>
       <div className="workbench-body">
         <label className="workbench-mobile-select">
-          切换工具
           <select
             aria-label="选择工具"
             value={activeTool}
@@ -391,25 +373,11 @@ const Workspace: React.FC = () => {
           </select>
         </label>
         <header className="workbench-heading">
-          <div>
-            <span className="tool-breadcrumb">
-              我的工具 / {activeGroup?.label}
-            </span>
-            <h2>{currentTool?.label}</h2>
-            <p>{currentTool?.description}</p>
-          </div>
-          <span className="tool-issue">
-            {String(toolNumber).padStart(2, "0")}
-            <span> / TOOL</span>
-          </span>
+          <h2>{currentTool?.label}</h2>
         </header>
         <div className="workspace-content tool-surface">
           {renderToolContent()}
         </div>
-        <footer className="workbench-footer">
-          <span>少一点琐碎，多一点专注。</span>
-          <a href="#home">返回导航 ↗</a>
-        </footer>
       </div>
     </div>
   );

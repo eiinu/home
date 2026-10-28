@@ -7,6 +7,7 @@ import Workspace from "./components/Workspace";
 import { ThemeProvider, useTheme } from "./components/ThemeProvider";
 import { categories, loadBookmarks, websiteUrl } from "./bookmarks";
 import Icon from "./components/UiIcon";
+import BookmarkLink from "./components/BookmarkLink";
 import type { Bookmark } from "./bookmarks";
 import { validateIconUrl } from "./bookmarks";
 import "./App.css";
@@ -204,10 +205,10 @@ function Homepage() {
             <div className="favorites-grid">
               {favorites.map((item) => (
                 <div className="favorite-site" key={item.id}>
-                  <a href={item.url} target="_blank" rel="noopener noreferrer">
+                  <BookmarkLink item={item}>
                     <SiteIcon item={item} />
                     <span>{item.name}</span>
-                  </a>
+                  </BookmarkLink>
                 </div>
               ))}
             </div>
@@ -225,18 +226,13 @@ function Homepage() {
                   <div className="directory-links">
                     {items.map((item) => (
                       <div className="directory-item" key={item.id}>
-                        <a
-                          href={item.url}
-                          title={item.description || undefined}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                        >
+                        <BookmarkLink item={item}>
                           <SiteIcon item={item} />
                           <span className="bookmark-text">
                             <strong>{item.name}</strong>
                           </span>
                           <Icon name="arrow" />
-                        </a>
+                        </BookmarkLink>
                       </div>
                     ))}
                   </div>

@@ -592,3 +592,33 @@
 [data-theme="dark"] .bookmark-icon img[src$="arena.svg"] {
   filter: invert(1);
 }
+.app-open-notice {
+  position: fixed;
+  right: 24px;
+  bottom: 24px;
+  z-index: 1100;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  max-width: calc(100vw - 32px);
+  padding: 14px 17px;
+  border: 1px solid var(--line);
+  border-radius: 9px;
+  background: var(--field);
+  color: var(--ink);
+  box-shadow: 0 5px 24px #1722170a;
+  font-size: 12px;
+}
+.app-open-notice > a {
+  color: var(--accent);
+  white-space: nowrap;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.app-open-notice > button {
+  border: 0;
+  background: none;
+  color: var(--secondary);
+  font-size: 19px;
+  padding: 0 3px;
+}

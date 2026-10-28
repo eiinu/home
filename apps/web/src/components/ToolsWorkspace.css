@@ -737,3 +737,10 @@
   max-width: 100%;
   width: 100%;
 }
+
+.tool-search > span,
+.tool-item-marker {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}

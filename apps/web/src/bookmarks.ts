@@ -58,24 +58,6 @@ const rows = [
     true,
     "#ea4335",
   ],
-  [
-    "linear",
-    "Linear",
-    "https://linear.app",
-    "把事情有序推进",
-    0,
-    false,
-    "#6868ed",
-  ],
-  [
-    "mdn",
-    "MDN",
-    "https://developer.mozilla.org/zh-CN/",
-    "随手查阅的开发文档",
-    0,
-    false,
-    "#202020",
-  ],
   ["vercel", "Vercel", "https://vercel.com", "让想法上线", 0, false, "#202020"],
   [
     "sspai",
@@ -96,15 +78,6 @@ const rows = [
     "#0084ff",
   ],
   [
-    "arena",
-    "Are.na",
-    "https://www.are.na",
-    "收集灵感的碎片",
-    1,
-    false,
-    "#202020",
-  ],
-  [
     "douban",
     "豆瓣",
     "https://www.douban.com",
@@ -114,24 +87,6 @@ const rows = [
     "#007722",
   ],
   [
-    "apple",
-    "Apple Music",
-    "https://music.apple.com",
-    "给日常一点背景音乐",
-    2,
-    false,
-    "#fa4468",
-  ],
-  [
-    "maps",
-    "高德地图",
-    "https://www.amap.com",
-    "下一站，去哪里",
-    2,
-    false,
-    "#4285f4",
-  ],
-  [
     "translate",
     "Google 翻译",
     "https://translate.google.com",
@@ -139,15 +94,6 @@ const rows = [
     2,
     false,
     "#4285f4",
-  ],
-  [
-    "ticktick",
-    "滴答清单",
-    "https://www.dida365.com",
-    "记下每一件小事",
-    2,
-    false,
-    "#4772fa",
   ],
 ] as const;
 export const defaults: Bookmark[] = rows.map(
@@ -162,10 +108,6 @@ export const defaults: Bookmark[] = rows.map(
     icon: id,
   }),
 );
-export const iconChoices = defaults.map((item) => ({
-  value: item.icon!,
-  label: item.name,
-}));
 export function validateIconUrl(value: string): string {
   const input = value.trim();
   if (
@@ -232,12 +174,28 @@ export function parseBookmarks(stored: unknown): Bookmark[] {
   }
   throw new Error("收藏数据格式不正确");
 }
+// Retired sites must also disappear from collections saved by earlier versions.
+const retiredHosts = [
+  "linear.app",
+  "are.na",
+  "developer.mozilla.org",
+  "amap.com",
+  "dida365.com",
+  "ticktick.com",
+  "music.apple.com",
+];
+function isRetiredSite(item: Bookmark) {
+  const host = new URL(item.url).hostname.toLowerCase();
+  return retiredHosts.some(
+    (retired) => host === retired || host.endsWith(`.${retired}`),
+  );
+}
 export function loadBookmarks(): Bookmark[] {
   try {
     const stored: unknown = JSON.parse(
       localStorage.getItem(storageKey) || "null",
     );
-    return parseBookmarks(stored);
+    return parseBookmarks(stored).filter((item) => !isRetiredSite(item));
   } catch {
     return defaults;
   }

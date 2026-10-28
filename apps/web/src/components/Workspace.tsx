@@ -2,6 +2,8 @@ import React, { useState, useMemo } from "react";
 import "./Workspace.css";
 import "./ToolsWorkspace.css";
 import "./ToolDetails.css";
+import UiIcon from "./UiIcon";
+import type { UiIconName } from "./UiIcon";
 import { useTheme } from "./ThemeProvider";
 import {
   JsonFormatter,
@@ -19,6 +21,22 @@ import { BorderEditor, ColorTool } from "@eiinu/creative";
 import { MarkdownRenderer, RemarkRenderer } from "@eiinu/editor";
 // import { Game2048 } from '@eiinu/games' // 暂时关闭游戏功能
 
+const toolGlyphs: Record<string, UiIconName> = {
+  "json-formatter": "brackets",
+  "html-formatter": "code",
+  "xml-formatter": "code",
+  "base64-tool": "article",
+  "regex-tester": "regex",
+  "cron-helper": "clock",
+  "sse-parser": "stream",
+  "keyboard-listener": "keyboard",
+  "clipboard-manager": "clipboard",
+  "border-editor": "border",
+  "color-tool": "palette",
+  "markdown-it": "markdown",
+  remarkjs: "markdown",
+  "theme-settings": "settings",
+};
 const Workspace: React.FC = () => {
   const [activeCategory, setActiveCategory] = useState("tools");
   const [activeTool, setActiveTool] = useState("base64-tool");
@@ -284,7 +302,9 @@ const Workspace: React.FC = () => {
       <aside className="workbench-sidebar" aria-label="工具目录">
         <h1>我的工具</h1>
         <label className="tool-search">
-          <span aria-hidden="true">⌕</span>
+          <span>
+            <UiIcon name="search" size={16} />
+          </span>
           <input
             aria-label="查找工具"
             placeholder="查找工具"
@@ -317,15 +337,11 @@ const Workspace: React.FC = () => {
                       aria-current={activeTool === tool.id ? "page" : undefined}
                       onClick={() => handleToolClick(tool.id, category.id)}
                     >
-                      <span className="tool-item-marker" aria-hidden="true">
-                        {tool.id === "json-formatter"
-                          ? "{ }"
-                          : tool.id === "html-formatter"
-                            ? "〈〉"
-                            : tool.id === "markdown-it" ||
-                                tool.id === "remarkjs"
-                              ? "M↓"
-                              : "·"}
+                      <span className="tool-item-marker">
+                        <UiIcon
+                          name={toolGlyphs[tool.id] || "tools"}
+                          size={16}
+                        />
                       </span>
                       <span>{tool.label}</span>
                       {activeTool === tool.id && (

@@ -5,58 +5,12 @@ import "@eiinu/creative/style.css";
 import "@eiinu/editor/style.css";
 import Workspace from "./components/Workspace";
 import { ThemeProvider, useTheme } from "./components/ThemeProvider";
-import {
-  categories,
-  loadBookmarks,
-  storageKey,
-  websiteUrl,
-  validateIconUrl,
-  parseBookmarks,
-} from "./bookmarks";
+import { categories, loadBookmarks, websiteUrl } from "./bookmarks";
+import Icon from "./components/UiIcon";
 import type { Bookmark } from "./bookmarks";
+import { validateIconUrl } from "./bookmarks";
 import "./App.css";
 
-type IconName = "sun" | "moon" | "tools" | "search" | "arrow" | "back";
-function Icon({ name }: { name: IconName }) {
-  const paths: Record<IconName, React.ReactNode> = {
-    sun: (
-      <>
-        <circle cx="12" cy="12" r="4" />
-        <path d="M12 2v2m0 16v2M2 12h2m16 0h2M5 5l1.5 1.5m11 11L19 19M5 19l1.5-1.5m11-11L19 5" />
-      </>
-    ),
-    moon: <path d="M20.5 13.5A9 9 0 0 1 10.5 3a9 9 0 1 0 10 10.5Z" />,
-    tools: (
-      <>
-        <rect x="3" y="7" width="18" height="14" rx="2" />
-        <path d="M8 7V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2M3 12h18m-12-2v4m6-4v4" />
-      </>
-    ),
-    search: (
-      <>
-        <circle cx="10.5" cy="10.5" r="6.5" />
-        <path d="m16 16 5 5" />
-      </>
-    ),
-    arrow: <path d="M6 18 18 6M6 6h12v12" />,
-    back: <path d="m12 5-7 7 7 7M5 12h15" />,
-  };
-  return (
-    <svg
-      width="20"
-      height="20"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="1.5"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      aria-hidden="true"
-    >
-      {paths[name]}
-    </svg>
-  );
-}
 function SiteIcon({ item }: { item: Bookmark }) {
   const [failedSource, setFailedSource] = useState<string | null>(null);
   let source: string | undefined;
@@ -97,7 +51,7 @@ const engines = {
 type Engine = keyof typeof engines;
 function Homepage() {
   const { isDark, setTheme } = useTheme();
-  const [bookmarks, setBookmarks] = useState(loadBookmarks);
+  const [bookmarks] = useState(loadBookmarks);
   const [view, setView] = useState(() =>
     location.hash === "#tools" ? "tools" : "home",
   );
@@ -105,8 +59,6 @@ function Homepage() {
   const [engine, setEngine] = useState<Engine>("Google");
   const [now, setNow] = useState(() => new Date());
   const inputRef = useRef<HTMLInputElement>(null);
-  const backupRef = useRef<HTMLInputElement>(null);
-  const [backupMessage, setBackupMessage] = useState("");
   useEffect(() => {
     const timer = setInterval(() => setNow(new Date()), 60000);
     const onHash = () => setView(location.hash === "#tools" ? "tools" : "home");
@@ -130,32 +82,6 @@ function Homepage() {
     window.addEventListener("keydown", shortcut);
     return () => window.removeEventListener("keydown", shortcut);
   }, [view]);
-  function exportBookmarks() {
-    const url = URL.createObjectURL(
-      new Blob([JSON.stringify(bookmarks, null, 2)], {
-        type: "application/json",
-      }),
-    );
-    const link = document.createElement("a");
-    link.href = url;
-    link.download = "eiinu-bookmarks.json";
-    link.click();
-    URL.revokeObjectURL(url);
-  }
-  async function importBackup(file: File) {
-    try {
-      if (file.size > 2097152) throw new Error("备份文件超过 2 MB。");
-      const incoming = parseBookmarks(JSON.parse(await file.text()));
-      const merged = new Map(bookmarks.map((item) => [item.id, item]));
-      for (const item of incoming) merged.set(item.id, item);
-      const next = [...merged.values()];
-      localStorage.setItem(storageKey, JSON.stringify(next));
-      setBookmarks(next);
-      setBackupMessage("");
-    } catch (error) {
-      setBackupMessage(error instanceof Error ? error.message : "导入失败。");
-    }
-  }
   function search(event: FormEvent) {
     const value = query.trim();
     if (!value) {
@@ -227,8 +153,8 @@ function Homepage() {
               onSubmit={search}
               role="search"
             >
-              <span className="google-mark" aria-hidden="true">
-                {engine === "Google" ? "G" : engine === "Bing" ? "b" : "百"}
+              <span className="search-symbol">
+                <Icon name="globe" size={23} />
               </span>
               <label className="sr-only" htmlFor="web-search">
                 搜索，或输入网址
@@ -268,27 +194,6 @@ function Homepage() {
               ))}
             </div>
           </section>
-          <div className="collection-actions">
-            <button onClick={() => backupRef.current?.click()}>导入备份</button>
-            <button onClick={exportBookmarks}>导出备份</button>
-            <input
-              type="file"
-              hidden
-              ref={backupRef}
-              accept=".json,application/json"
-              aria-label="选择收藏备份"
-              onChange={(event) => {
-                const file = event.target.files?.[0];
-                if (file) void importBackup(file);
-                event.target.value = "";
-              }}
-            />
-          </div>
-          {backupMessage && (
-            <p className="form-error" role="alert">
-              {backupMessage}
-            </p>
-          )}
           <section
             className="favorites-section"
             aria-labelledby="favorites-title"

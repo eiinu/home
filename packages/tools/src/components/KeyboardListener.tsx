@@ -233,7 +233,7 @@ export const KeyboardListener: React.FC<KeyboardListenerProps> = ({ className = 
       <div className="keyboard-listener-content">
         {!isListening && (
           <div className="listening-prompt">
-            <div className="prompt-icon">⌨️</div>
+            <div className="prompt-icon">⌨</div>
             <h4>点击"开始监听"按钮开始捕获键盘事件</h4>
             <p>监听开始后，按下任意按键查看详细的事件信息</p>
           </div>
@@ -304,7 +304,7 @@ export const KeyboardListener: React.FC<KeyboardListenerProps> = ({ className = 
                   <h5>跨平台对比</h5>
                   <div className="platform-comparison">
                     <div className="platform-item">
-                      <h6>🍎 macOS</h6>
+                      <h6>macOS</h6>
                       <div className="platform-details">
                         <div>按键: <strong>{crossPlatformData.macOS.key}</strong></div>
                         {crossPlatformData.macOS.modifier && (
@@ -314,7 +314,7 @@ export const KeyboardListener: React.FC<KeyboardListenerProps> = ({ className = 
                       </div>
                     </div>
                     <div className="platform-item">
-                      <h6>🪟 Windows</h6>
+                      <h6>Windows</h6>
                       <div className="platform-details">
                         <div>按键: <strong>{crossPlatformData.windows.key}</strong></div>
                         {crossPlatformData.windows.modifier && (

@@ -1,6 +1,7 @@
 import React, { useState, useMemo } from "react";
 import "./Workspace.css";
 import "./ToolsWorkspace.css";
+import "./ToolDetails.css";
 import { useTheme } from "./ThemeProvider";
 import {
   JsonFormatter,

@@ -151,7 +151,7 @@ const RegexTester: React.FC<RegexTesterProps> = ({ theme = 'auto' }) => {
         <h2 className="regex-tester-title">正则表达式测试器</h2>
         <div className="regex-tester-actions">
           <Button variant="secondary" size="small" onClick={handleClearAll}>
-            🗑️ 清空
+            清空
           </Button>
           <Button 
             variant="secondary" 
@@ -159,7 +159,7 @@ const RegexTester: React.FC<RegexTesterProps> = ({ theme = 'auto' }) => {
             onClick={handleCopyMatches}
             disabled={matchResults.length === 0}
           >
-            📋 复制匹配
+            复制匹配
           </Button>
         </div>
       </div>

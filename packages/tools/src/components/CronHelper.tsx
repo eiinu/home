@@ -126,7 +126,7 @@ const CronHelper: React.FC<CronHelperProps> = ({ theme = 'auto' }) => {
       <div className="cron-helper-header">
         <h2 className="cron-helper-title">Cron 表达式助手</h2>
         <div className="cron-helper-mode">
-          <Button variant="secondary" size="small" onClick={copyExpr}>📋 复制表达式</Button>
+          <Button variant="secondary" size="small" onClick={copyExpr}>复制表达式</Button>
         </div>
       </div>
 

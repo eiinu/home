@@ -256,7 +256,7 @@ const ColorTool: React.FC<ColorToolProps> = () => {
         <h2 className="color-tool-title">颜色工具</h2>
         <div className="color-tool-actions">
           <Button variant="secondary" size="small" onClick={generateRandomColor}>
-            🎲 随机颜色
+            随机颜色
           </Button>
         </div>
       </div>
@@ -272,19 +272,19 @@ const ColorTool: React.FC<ColorToolProps> = () => {
           className={`tab-button ${activeTab === 'picker' ? 'active' : ''}`}
           onClick={() => setActiveTab('picker')}
         >
-          🎨 颜色选择器
+          颜色选择器
         </button>
         <button
           className={`tab-button ${activeTab === 'palette' ? 'active' : ''}`}
           onClick={() => setActiveTab('palette')}
         >
-          🎭 调色板
+          调色板
         </button>
         <button
           className={`tab-button ${activeTab === 'gradient' ? 'active' : ''}`}
           onClick={() => setActiveTab('gradient')}
         >
-          🌈 渐变生成
+          渐变生成
         </button>
       </div>
 
@@ -339,7 +339,7 @@ const ColorTool: React.FC<ColorToolProps> = () => {
                         size="small"
                         onClick={() => copyColor(format as keyof ColorFormats)}
                       >
-                        📋
+                        复制
                       </Button>
                     </div>
                     <div className="format-value">{value}</div>
@@ -387,7 +387,7 @@ const ColorTool: React.FC<ColorToolProps> = () => {
                       size="small"
                       onClick={() => copyColor('hex')}
                     >
-                      📋
+                      复制
                     </Button>
                   </div>
                 </div>
@@ -457,7 +457,7 @@ const ColorTool: React.FC<ColorToolProps> = () => {
                           }
                         }}
                       >
-                        📋
+                        复制
                       </Button>
                     </div>
                   </div>
@@ -482,7 +482,7 @@ const ColorTool: React.FC<ColorToolProps> = () => {
                     }
                   }}
                 >
-                  📋
+                  复制
                 </Button>
               </div>
             </div>

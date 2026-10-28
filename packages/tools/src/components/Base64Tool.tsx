@@ -135,7 +135,7 @@ const Base64Tool: React.FC<Base64ToolProps> = ({ theme = 'auto' }) => {
               size="small"
               onClick={() => document.getElementById('file-input')?.click()}
             >
-              📁 选择文件
+              导入文件
             </Button>
           </div>
         </div>
@@ -166,13 +166,13 @@ const Base64Tool: React.FC<Base64ToolProps> = ({ theme = 'auto' }) => {
 
         <div className="base64-tool-actions">
           <Button variant="primary" onClick={handleProcess}>
-            {mode === 'encode' ? '🔒 编码' : '🔓 解码'}
+            {mode === 'encode' ? '编码' : '解码'}
           </Button>
           <Button variant="secondary" onClick={handleSwap} disabled={!inputText && !outputText}>
-            🔄 交换
+            交换
           </Button>
           <Button variant="secondary" onClick={handleClear}>
-            🗑️ 清空
+            清空
           </Button>
         </div>
 
@@ -185,7 +185,7 @@ const Base64Tool: React.FC<Base64ToolProps> = ({ theme = 'auto' }) => {
               {outputText.length} 字符
               {outputText && (
                 <Button variant="secondary" size="small" onClick={handleCopy}>
-                  📋 复制
+                  复制
                 </Button>
               )}
             </div>

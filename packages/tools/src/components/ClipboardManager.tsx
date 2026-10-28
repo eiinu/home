@@ -200,7 +200,7 @@ const ClipboardManager: React.FC = () => {
     <>
       <div className="clipboard-manager">
       <div className="clipboard-section">
-        <h2>📋 剪贴板读取</h2>
+        <h2>剪贴板读取</h2>
         <div 
           ref={pasteAreaRef}
           className="paste-area"
@@ -235,7 +235,7 @@ const ClipboardManager: React.FC = () => {
       </div>
 
       <div className="clipboard-section">
-        <h2>✏️ 剪贴板写入</h2>
+        <h2>剪贴板写入</h2>
         
         <div className="write-options">
           <label className="checkbox-label">

@@ -1,0 +1,627 @@
+/* Internal tool states share the homepage palette, including nested themes. */
+.tools-workspace .tool-surface,
+.tools-workspace .tool-surface [data-theme],
+.tools-workspace .tool-surface :is(.regex-tester, .color-tool) {
+  --tool-soft: color-mix(in srgb, var(--accent) 9%, var(--field));
+  --tool-error: #ad6257;
+  --tool-error-soft: color-mix(in srgb, var(--tool-error) 9%, var(--field));
+  --tool-warning: #a5824d;
+  --background-color: var(--paper);
+  --bg-color: transparent;
+  --bg-primary: var(--field);
+  --bg-secondary: var(--paper);
+  --bg-tertiary: var(--tool-soft);
+  --bg-code: var(--paper);
+  --bg-hover: var(--tool-soft);
+  --text-color: var(--ink);
+  --text-primary: var(--ink);
+  --text-secondary: var(--secondary);
+  --text-disabled: var(--secondary);
+  --primary-color: var(--accent);
+  --primary-hover: color-mix(in srgb, var(--accent) 85%, var(--ink));
+  --primary-shadow: color-mix(in srgb, var(--accent) 13%, transparent);
+  --secondary-color: var(--secondary);
+  --accent-color: var(--accent);
+  --border-color: var(--line);
+  --toolbar-bg: transparent;
+  --header-background: transparent;
+  --card-background: var(--field);
+  --card-bg: var(--field);
+  --card-border: var(--line);
+  --card-shadow: none;
+  --tab-background: transparent;
+  --active-background: var(--tool-soft);
+  --active-bg: var(--tool-soft);
+  --active-border: var(--accent);
+  --hover-background: var(--tool-soft);
+  --input-background: var(--field);
+  --input-bg: var(--field);
+  --input-border: var(--line);
+  --button-background: var(--field);
+  --button-bg: var(--field);
+  --button-hover-bg: var(--tool-soft);
+  --button-text: var(--ink);
+  --button-disabled-bg: var(--paper);
+  --button-disabled-text: var(--secondary);
+  --item-background: var(--paper);
+  --code-background: var(--paper);
+  --code-color: var(--ink);
+  --placeholder-color: var(--secondary);
+  --highlight-background: color-mix(in srgb, var(--accent) 19%, var(--field));
+  --highlight-color: var(--ink);
+  --group-background: var(--tool-soft);
+  --group-color: var(--accent);
+  --success-background: var(--tool-soft);
+  --success-color: var(--accent);
+  --success-border: var(--line);
+  --warning-color: var(--tool-warning);
+  --error-background: var(--tool-error-soft);
+  --error-color: var(--tool-error);
+  --error-bg: var(--tool-error-soft);
+  --error-text: var(--tool-error);
+  --error-border: color-mix(in srgb, var(--tool-error) 30%, var(--line));
+  --result-info-color: var(--secondary);
+  --help-text-color: var(--secondary);
+  --pulse-color: var(--accent);
+  --font-family:
+    -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", sans-serif;
+}
+.tools-workspace .tool-surface :is(input, textarea, select):focus {
+  outline: 2px solid color-mix(in srgb, var(--accent) 40%, transparent);
+  outline-offset: 2px;
+  border-color: var(--accent);
+  box-shadow: none;
+}
+.tools-workspace .tool-surface :is(input, textarea)::placeholder {
+  color: var(--secondary);
+  opacity: 0.8;
+}
+.tools-workspace .tool-surface :is(button, .btn):focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+  box-shadow: none;
+}
+.tools-workspace
+  .tool-surface
+  :is(
+    .btn-primary,
+    .btn-active,
+    .tab-btn.active,
+    .tab-button.active,
+    .mode-button.active,
+    .flag-button.active,
+    .read-button,
+    .write-button,
+    .copy-button
+  ):hover:not(:disabled) {
+  background: var(--primary-hover);
+  color: white;
+}
+/* Editor focus, cursor, selection, search and read-only output. */
+.tools-workspace .tool-surface .cm-editor {
+  border: 0;
+  box-shadow: none;
+}
+.tools-workspace .tool-surface .cm-editor.cm-focused {
+  outline: 2px solid color-mix(in srgb, var(--accent) 50%, transparent);
+  outline-offset: -2px;
+}
+.tools-workspace .tool-surface .cm-line {
+  color: var(--ink);
+}
+.tools-workspace .tool-surface .cm-cursor {
+  border-left-color: var(--accent);
+}
+.tools-workspace
+  .tool-surface
+  :is(.cm-selectionBackground, .cm-focused .cm-selectionBackground) {
+  background: color-mix(in srgb, var(--accent) 22%, transparent);
+}
+.tools-workspace .tool-surface .cm-selectionMatch {
+  background: var(--tool-soft);
+}
+.tools-workspace .tool-surface .cm-placeholder {
+  color: var(--secondary);
+  font-style: normal;
+}
+.tools-workspace
+  .tool-surface
+  :is(.cm-foldPlaceholder, .cm-panels, .cm-tooltip) {
+  background: var(--paper);
+  border-color: var(--line);
+  color: var(--ink);
+  box-shadow: none;
+}
+.tools-workspace .tool-surface :is(.cm-searchMatch, .cm-searchMatch-selected) {
+  background: color-mix(in srgb, var(--accent) 20%, transparent);
+  outline: 1px solid var(--accent);
+}
+/* Compact, readable status feedback instead of saturated banners. */
+.tools-workspace
+  .tool-surface
+  :is(
+    .toast,
+    .regex-tester-message,
+    .color-tool-message,
+    .base64-tool-message,
+    .cron-helper-message
+  ) {
+  background: var(--field);
+  color: var(--ink);
+  border: 1px solid var(--line);
+  border-left: 3px solid var(--accent);
+  border-radius: 8px;
+  box-shadow: 0 6px 24px #1722170a;
+  font-size: 12px;
+  line-height: 1.6;
+}
+.tools-workspace
+  .tool-surface
+  :is(
+    .regex-tester-message,
+    .color-tool-message,
+    .base64-tool-message,
+    .cron-helper-message
+  ) {
+  padding: 12px 16px;
+  margin: 0 0 18px;
+}
+.tools-workspace .tool-surface :is(.toast-error, .error-message) {
+  border-left: 3px solid var(--tool-error);
+  background: var(--field);
+  color: var(--tool-error);
+}
+.tools-workspace .tool-surface .toast-warning {
+  border-left-color: var(--tool-warning);
+}
+.tools-workspace .tool-surface .toast-message {
+  font-size: 12px;
+}
+.tools-workspace .tool-surface .toast-close {
+  padding: 0;
+  min-height: 24px;
+  width: 24px;
+  height: 24px;
+  border: 0;
+  background: none;
+  color: var(--secondary);
+  font-size: 18px;
+}
+.tools-workspace .tool-surface .toast-container {
+  top: 80px;
+  right: 24px;
+  max-width: calc(100vw - 32px);
+}
+.tools-workspace
+  .tool-surface
+  :is(.status-indicator, .match-index, .step-number, .event-type) {
+  border-radius: 4px;
+  font-size: 10px;
+  font-weight: 500;
+  line-height: 1.6;
+  padding: 3px 7px;
+}
+.tools-workspace
+  .tool-surface
+  :is(
+    .status-indicator.valid,
+    .event-type.keydown,
+    .modifier.active,
+    .history-modifiers .mod
+  ) {
+  background: var(--tool-soft);
+  color: var(--accent);
+  border-color: var(--line);
+}
+.tools-workspace
+  .tool-surface
+  :is(.status-indicator.invalid, .event-type.keyup) {
+  background: var(--tool-error-soft);
+  color: var(--tool-error);
+}
+/* Regex: one clear input, quiet flags, and matching result details. */
+.tools-workspace .tool-surface .regex-pattern-section .pattern-wrapper {
+  padding: 6px 12px;
+  gap: 6px;
+}
+.tools-workspace
+  .tool-surface
+  .regex-pattern-section
+  .pattern-wrapper:focus-within {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 2px var(--tool-soft);
+}
+.tools-workspace
+  .tool-surface
+  .regex-pattern-section
+  :is(.pattern-input, .flags-input) {
+  padding: 8px 3px;
+  border: 0;
+  background: transparent;
+  outline: none;
+  box-shadow: none;
+}
+.tools-workspace .tool-surface .flag-button {
+  width: 30px;
+  height: 30px;
+  min-height: 30px;
+  padding: 0;
+  font-family: ui-monospace, monospace;
+}
+.tools-workspace .tool-surface .pattern-button {
+  font-size: 11px;
+  min-height: 29px;
+  padding: 5px 9px;
+}
+.tools-workspace .tool-surface :is(.no-matches, .description) {
+  font-style: normal;
+  color: var(--secondary);
+}
+.tools-workspace .tool-surface :is(.match-index, .step-number) {
+  background: var(--tool-soft);
+  color: var(--accent);
+}
+.tools-workspace
+  .tool-surface
+  :is(
+    .match-position,
+    .step-hex,
+    .field-row-label,
+    .palette-header p,
+    .gradient-preview p
+  ) {
+  color: var(--secondary);
+  font-size: 11px;
+}
+.tools-workspace .tool-surface .regex-match {
+  color: var(--ink);
+  font-weight: 500;
+  border-bottom: 1px solid var(--accent);
+}
+.tools-workspace .tool-surface .field-grid {
+  padding: 15px;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  grid-template-columns: 65px minmax(0, 1fr);
+  row-gap: 14px;
+}
+.tools-workspace .tool-surface .field-grid code {
+  font-size: 12px;
+  color: var(--accent);
+}
+.tools-workspace .tool-surface .next-times {
+  font-size: 12px;
+  line-height: 1.8;
+  color: var(--ink);
+}
+/* Keyboard: neutral keycaps, semantic highlights, no flashing blue pulse. */
+.tools-workspace .tool-surface :is(.listening-prompt, .listening-active) {
+  border: 1px dashed var(--line);
+  background: var(--field);
+  border-radius: 9px;
+  min-height: 220px;
+  gap: 10px;
+}
+.tools-workspace .tool-surface .prompt-icon {
+  font:
+    32px ui-monospace,
+    monospace;
+  color: var(--accent);
+  margin: 0;
+}
+.tools-workspace .tool-surface .pulse-indicator {
+  width: 10px;
+  height: 10px;
+  animation: none;
+  margin: 0 0 6px;
+  box-shadow: 0 0 0 7px var(--tool-soft);
+}
+.tools-workspace .tool-surface :is(.listening-prompt h4, .listening-active h4) {
+  font-size: 14px;
+  font-weight: 400;
+  margin: 6px 0;
+}
+.tools-workspace .tool-surface :is(.listening-prompt p, .listening-active p) {
+  font-size: 12px;
+  line-height: 1.7;
+}
+.tools-workspace
+  .tool-surface
+  :is(.event-header, .event-history h4, .item-header) {
+  background: var(--paper);
+  border-color: var(--line);
+  padding: 13px 16px;
+}
+.tools-workspace .tool-surface :is(.detail-item, .platform-item) {
+  border-color: var(--line);
+  background: var(--field);
+  border-radius: 6px;
+  padding: 12px;
+}
+.tools-workspace .tool-surface :is(.detail-section h5, .platform-item h6) {
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--ink);
+  border-color: var(--line);
+}
+.tools-workspace .tool-surface :is(.key-value, .boolean-value.true) {
+  background: var(--tool-soft);
+  color: var(--accent);
+}
+.tools-workspace .tool-surface .boolean-value.false {
+  color: var(--secondary);
+  background: var(--paper);
+}
+.tools-workspace .tool-surface :is(.code-value, .modifier) {
+  background: var(--paper);
+  border-color: var(--line);
+  color: var(--ink);
+  font-weight: 400;
+}
+.tools-workspace .tool-surface .history-list {
+  font-size: 11px;
+}
+/* Creative controls use the UI palette; user-selected colors remain untouched. */
+.tools-workspace
+  .tool-surface
+  :is(.border-editor-controls, .border-editor-preview, .side-section) {
+  background: var(--field);
+  border: 1px solid var(--line);
+  border-radius: 9px;
+  padding: 20px;
+  box-shadow: none;
+}
+.tools-workspace .tool-surface .border-editor-header {
+  display: none;
+}
+.tools-workspace .tool-surface .border-editor-controls .control-group {
+  background: transparent;
+  border-radius: 0;
+  padding-bottom: 20px;
+  margin-bottom: 20px;
+  border-bottom: 1px solid var(--line);
+}
+.tools-workspace
+  .tool-surface
+  .border-editor-controls
+  .control-group:last-child {
+  border: 0;
+  margin: 0;
+  padding-bottom: 0;
+}
+.tools-workspace .tool-surface :is(.side-section, .radius-corner) {
+  padding: 12px;
+  background: var(--paper);
+  min-width: 0;
+}
+.tools-workspace .tool-surface .control-group label {
+  font-size: 12px;
+  font-weight: 400;
+}
+.tools-workspace .tool-surface .radius-header {
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.tools-workspace .tool-surface .control-group input[type="range"] {
+  background: var(--line);
+}
+.tools-workspace
+  .tool-surface
+  .control-group
+  input[type="range"]::-webkit-slider-thumb {
+  background: var(--accent);
+  border: 2px solid var(--field);
+  box-shadow: 0 0 0 1px var(--line);
+  width: 15px;
+  height: 15px;
+}
+.tools-workspace
+  .tool-surface
+  .control-group
+  input[type="range"]::-moz-range-thumb {
+  background: var(--accent);
+  border: 2px solid var(--field);
+  box-shadow: 0 0 0 1px var(--line);
+  width: 12px;
+  height: 12px;
+}
+.tools-workspace .tool-surface .preview-box {
+  background: var(--tool-soft);
+  color: var(--ink);
+  font-weight: 400;
+}
+.tools-workspace .tool-surface .preview-container {
+  padding: 25px 12px;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+}
+.tools-workspace .tool-surface .color-input-group {
+  min-width: 0;
+}
+.tools-workspace .tool-surface input[type="color"] {
+  border: 1px solid var(--line);
+  background: transparent;
+  border-radius: 6px;
+  padding: 4px;
+}
+.tools-workspace .tool-surface .color-preview {
+  box-shadow: none;
+  border-radius: 9px;
+  border: 1px solid var(--line);
+}
+.tools-workspace .tool-surface .color-tool-tabs {
+  display: flex;
+  border-bottom: 1px solid var(--line);
+  margin: 0 0 23px;
+  gap: 20px;
+}
+.tools-workspace .tool-surface .color-tool-tabs .tab-button {
+  flex: none;
+  border: 0;
+  border-bottom: 2px solid transparent;
+  border-radius: 0;
+  padding: 10px 0;
+  background: none;
+  color: var(--secondary);
+}
+.tools-workspace .tool-surface .color-tool-tabs .tab-button.active {
+  color: var(--accent);
+  border-bottom-color: var(--accent);
+}
+.tools-workspace .tool-surface .color-tool-tabs .tab-button:hover {
+  background: transparent;
+  color: var(--ink);
+}
+.tools-workspace .tool-surface :is(.palette-item, .gradient-step) {
+  background: var(--field);
+  border: 1px solid var(--line);
+  border-radius: 7px;
+  overflow: hidden;
+  box-shadow: none;
+}
+.tools-workspace .tool-surface :is(.palette-color, .step-color, .preset-color) {
+  box-shadow: none;
+  transform: none;
+  transition: none;
+}
+.tools-workspace .tool-surface :is(.palette-info, .step-info) {
+  padding: 9px;
+  background: var(--field);
+  color: var(--ink);
+}
+.tools-workspace
+  .tool-surface
+  :is(.format-header button, .palette-info button, .step-info button) {
+  font-size: 10px;
+  padding: 4px 7px;
+  min-height: 25px;
+}
+.tools-workspace .tool-surface .gradient-preview {
+  border: 1px solid var(--line);
+  border-radius: 9px;
+  padding: 18px;
+}
+.tools-workspace .tool-surface .gradient-bar {
+  box-shadow: none;
+  border-radius: 7px;
+  border: 1px solid var(--line);
+}
+.tools-workspace
+  .tool-surface
+  :is(.css-code, .format-value, .palette-hex, .step-hex) {
+  font-family: ui-monospace, "SFMono-Regular", Consolas, monospace;
+}
+.tools-workspace .tool-surface .css-output > .css-code {
+  display: block;
+}
+/* Clipboard and Markdown previews follow the same typographic system. */
+.tools-workspace .tool-surface .clipboard-section h2 {
+  font-family: "Songti SC", SimSun, serif;
+  font-size: 19px;
+  font-weight: 400;
+  margin: 0 0 20px;
+}
+.tools-workspace .tool-surface .paste-area {
+  font-size: 12px;
+  line-height: 1.8;
+  border-width: 1px;
+  padding: 28px 18px;
+}
+.tools-workspace
+  .tool-surface
+  .clipboard-section
+  :is(.write-button, .read-button) {
+  width: auto;
+  margin: 4px 0 17px;
+}
+.tools-workspace .tool-surface .clipboard-content {
+  border-top: 1px solid var(--line);
+  padding-top: 18px;
+}
+.tools-workspace .tool-surface .write-options {
+  gap: 18px;
+  flex-wrap: wrap;
+}
+.tools-workspace .tool-surface .write-input label {
+  font-size: 12px;
+}
+.tools-workspace .tool-surface .preview :is(blockquote, pre, code, th, td, hr) {
+  border-color: var(--line);
+  color: var(--ink);
+}
+.tools-workspace .tool-surface .preview blockquote {
+  margin: 20px 0;
+  padding: 2px 16px;
+  border-left: 2px solid var(--accent);
+  background: var(--tool-soft);
+}
+.tools-workspace .tool-surface .preview :is(pre, code) {
+  background: var(--paper);
+  border-radius: 4px;
+  line-height: 1.7;
+  font-size: 12px;
+}
+.tools-workspace .tool-surface .preview pre {
+  padding: 14px;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+.tools-workspace .tool-surface .preview hr {
+  border: 0;
+  border-top: 1px solid var(--line);
+  margin: 24px 0;
+}
+@media (max-width: 767px) {
+  .tools-workspace .tool-surface .toast-container {
+    top: 80px;
+    left: 16px;
+    right: 16px;
+  }
+  .tools-workspace
+    .tool-surface
+    :is(.border-editor-controls, .border-editor-preview) {
+    padding: 15px;
+  }
+  .tools-workspace .tool-surface .color-tool-tabs {
+    gap: 15px;
+  }
+  .tools-workspace .tool-surface .color-tool-tabs .tab-button {
+    font-size: 11px;
+  }
+  .tools-workspace .tool-surface .field-grid {
+    grid-template-columns: 50px minmax(0, 1fr);
+    gap: 12px 8px;
+    padding: 12px;
+  }
+  .tools-workspace .tool-surface .radius-uniform {
+    flex-wrap: wrap;
+  }
+  .tools-workspace .tool-surface .radius-uniform input[type="range"] {
+    flex-basis: 100%;
+  }
+  .tools-workspace .tool-surface .palette-colors {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .tools-workspace .tool-surface .gradient-steps {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+/* Tab state wins over the shared primary-button hover treatment. */
+.tools-workspace .tool-surface .color-tool .color-tool-tabs .tab-button.active,
+.tools-workspace
+  .tool-surface
+  .color-tool
+  .color-tool-tabs
+  .tab-button.active:hover:not(:disabled) {
+  background: transparent;
+  color: var(--accent);
+  border-bottom-color: var(--accent);
+}
+.tools-workspace
+  .tool-surface
+  .color-tool
+  .color-tool-tabs
+  .tab-button:hover:not(:disabled) {
+  background: transparent;
+  color: var(--ink);
+}

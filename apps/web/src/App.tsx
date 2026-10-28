@@ -10,23 +10,13 @@ import {
   loadBookmarks,
   storageKey,
   websiteUrl,
-  iconChoices,
   validateIconUrl,
   parseBookmarks,
 } from "./bookmarks";
 import type { Bookmark } from "./bookmarks";
 import "./App.css";
 
-type IconName =
-  | "sun"
-  | "moon"
-  | "tools"
-  | "search"
-  | "edit"
-  | "arrow"
-  | "plus"
-  | "close"
-  | "back";
+type IconName = "sun" | "moon" | "tools" | "search" | "arrow" | "back";
 function Icon({ name }: { name: IconName }) {
   const paths: Record<IconName, React.ReactNode> = {
     sun: (
@@ -48,14 +38,7 @@ function Icon({ name }: { name: IconName }) {
         <path d="m16 16 5 5" />
       </>
     ),
-    edit: (
-      <>
-        <path d="m15 4 5 5M4 20l5-1L20 8a2 2 0 0 0-5-5L4 14Z" />
-      </>
-    ),
     arrow: <path d="M6 18 18 6M6 6h12v12" />,
-    plus: <path d="M12 4v16M4 12h16" />,
-    close: <path d="m6 6 12 12M6 18 18 6" />,
     back: <path d="m12 5-7 7 7 7M5 12h15" />,
   };
   return (
@@ -81,7 +64,7 @@ function SiteIcon({ item }: { item: Bookmark }) {
     try {
       source = validateIconUrl(item.iconUrl || "");
     } catch {
-      /* Keep the letter fallback while an address is incomplete. */
+      /* Unavailable custom images use the existing letter fallback. */
     }
   } else if (item.icon && item.icon !== "letter")
     source = `/icons/${item.icon}.svg`;
@@ -112,15 +95,6 @@ const engines = {
   百度: "https://www.baidu.com/s",
 };
 type Engine = keyof typeof engines;
-const blank = {
-  name: "",
-  url: "",
-  description: "",
-  category: categories[0],
-  favorite: true,
-  color: "#718c76",
-  icon: "letter",
-};
 function Homepage() {
   const { isDark, setTheme } = useTheme();
   const [bookmarks, setBookmarks] = useState(loadBookmarks);
@@ -129,18 +103,10 @@ function Homepage() {
   );
   const [query, setQuery] = useState("");
   const [engine, setEngine] = useState<Engine>("Google");
-  const [managing, setManaging] = useState(false);
-  const [editing, setEditing] = useState<string | null>(null);
-  const [form, setForm] = useState<Omit<Bookmark, "id">>(blank);
-  const [error, setError] = useState("");
-  const [storageError, setStorageError] = useState(false);
   const [now, setNow] = useState(() => new Date());
   const inputRef = useRef<HTMLInputElement>(null);
-  const dialogRef = useRef<HTMLDialogElement>(null);
-  const iconFileRef = useRef<HTMLInputElement>(null);
   const backupRef = useRef<HTMLInputElement>(null);
   const [backupMessage, setBackupMessage] = useState("");
-  const returnFocus = useRef<HTMLElement | null>(null);
   useEffect(() => {
     const timer = setInterval(() => setNow(new Date()), 60000);
     const onHash = () => setView(location.hash === "#tools" ? "tools" : "home");
@@ -151,19 +117,11 @@ function Homepage() {
     };
   }, []);
   useEffect(() => {
-    if (editing !== null) dialogRef.current?.showModal();
-    else {
-      dialogRef.current?.close();
-      returnFocus.current?.focus();
-    }
-  }, [editing]);
-  useEffect(() => {
     const shortcut = (event: KeyboardEvent) => {
       if (
         (event.metaKey || event.ctrlKey) &&
         event.key.toLowerCase() === "k" &&
-        view === "home" &&
-        editing === null
+        view === "home"
       ) {
         event.preventDefault();
         inputRef.current?.focus();
@@ -171,70 +129,7 @@ function Homepage() {
     };
     window.addEventListener("keydown", shortcut);
     return () => window.removeEventListener("keydown", shortcut);
-  }, [view, editing]);
-  function edit(item?: Bookmark, category = categories[0]) {
-    returnFocus.current = document.activeElement as HTMLElement;
-    setForm(item ? { ...item } : { ...blank, category });
-    setError("");
-    setEditing(item?.id || "new");
-  }
-  function persistBookmarks(next: Bookmark[]) {
-    try {
-      localStorage.setItem(storageKey, JSON.stringify(next));
-    } catch {
-      setStorageError(true);
-      throw new Error("保存失败，请导出备份后重试。");
-    }
-    setStorageError(false);
-    setBookmarks(next);
-  }
-  function save(event: FormEvent) {
-    event.preventDefault();
-    try {
-      const url = websiteUrl(form.url);
-      if (!form.name.trim()) {
-        setError("请填写网站名称");
-        return;
-      }
-      if (form.icon === "image") validateIconUrl(form.iconUrl || "");
-      const item: Bookmark = {
-        ...form,
-        name: form.name.trim(),
-        url,
-        id: editing === "new" ? crypto.randomUUID() : editing!,
-      };
-      persistBookmarks(
-        editing === "new"
-          ? [...bookmarks, item]
-          : bookmarks.map((old) => (old.id === editing ? item : old)),
-      );
-      setEditing(null);
-    } catch (error) {
-      setError(error instanceof Error ? error.message : "保存失败，请重试。");
-    }
-  }
-  async function uploadIcon(file: File) {
-    setError("");
-    if (!["image/png", "image/jpeg", "image/webp"].includes(file.type)) {
-      setError("请选择 PNG、JPEG 或 WebP 图片。");
-      return;
-    }
-    if (file.size > 131072) {
-      setError("图标图片需小于 128 KB。");
-      return;
-    }
-    const reader = new FileReader();
-    reader.onload = () => {
-      if (typeof reader.result === "string")
-        setForm((current) => ({
-          ...current,
-          icon: "image",
-          iconUrl: reader.result as string,
-        }));
-    };
-    reader.onerror = () => setError("图片读取失败，请重试。");
-    reader.readAsDataURL(file);
-  }
+  }, [view]);
   function exportBookmarks() {
     const url = URL.createObjectURL(
       new Blob([JSON.stringify(bookmarks, null, 2)], {
@@ -312,11 +207,6 @@ function Homepage() {
             <Icon name={view === "tools" ? "back" : "tools"} />
             <span>{view === "tools" ? "返回主页" : "我的工具"}</span>
           </a>
-          <span className="header-divider" />
-          <button onClick={() => edit()}>
-            <Icon name="plus" />
-            <span>添加网站</span>
-          </button>
         </nav>
       </header>
       {view === "home" ? (
@@ -378,11 +268,6 @@ function Homepage() {
               ))}
             </div>
           </section>
-          {storageError && (
-            <p className="storage-warning" role="status">
-              浏览器存储不可用，修改暂时无法保存。
-            </p>
-          )}
           <div className="collection-actions">
             <button onClick={() => backupRef.current?.click()}>导入备份</button>
             <button onClick={exportBookmarks}>导出备份</button>
@@ -410,14 +295,6 @@ function Homepage() {
           >
             <div className="section-heading">
               <h2 id="favorites-title">常去的地方</h2>
-              <button
-                className={managing ? "editing-active" : ""}
-                onClick={() => setManaging(!managing)}
-                aria-pressed={managing}
-              >
-                <Icon name="edit" />
-                {managing ? "完成" : "编辑"}
-              </button>
             </div>
             <div className="favorites-grid">
               {favorites.map((item) => (
@@ -426,77 +303,40 @@ function Homepage() {
                     <SiteIcon item={item} />
                     <span>{item.name}</span>
                   </a>
-                  {managing && (
-                    <button
-                      className="favorite-edit"
-                      aria-label={`编辑 ${item.name}`}
-                      onClick={() => edit(item)}
-                    >
-                      <Icon name="edit" />
-                    </button>
-                  )}
                 </div>
               ))}
-              <button className="add-shortcut" onClick={() => edit()}>
-                <span>
-                  <Icon name="plus" />
-                </span>
-                添加
-              </button>
             </div>
           </section>
           <div className="directory-grid">
-            {sections.map(({ name, items }, index) => (
-              <section
-                className="directory-section"
-                key={name}
-                aria-labelledby={`category-${index}`}
-              >
-                <h2 id={`category-${index}`}>{name}</h2>
-                <div className="directory-links">
-                  {items.map((item) => (
-                    <div className="directory-item" key={item.id}>
-                      <a
-                        href={item.url}
-                        title={item.description || undefined}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                      >
-                        <SiteIcon item={item} />
-                        <span className="bookmark-text">
-                          <strong>{item.name}</strong>
-                        </span>
-                        {!managing && <Icon name="arrow" />}
-                      </a>
-                      {managing && (
-                        <button
-                          aria-label={`编辑 ${item.name}`}
-                          onClick={() => edit(item)}
+            {sections
+              .filter((section) => section.items.length > 0)
+              .map(({ name, items }, index) => (
+                <section
+                  className="directory-section"
+                  key={name}
+                  aria-labelledby={`category-${index}`}
+                >
+                  <h2 id={`category-${index}`}>{name}</h2>
+                  <div className="directory-links">
+                    {items.map((item) => (
+                      <div className="directory-item" key={item.id}>
+                        <a
+                          href={item.url}
+                          title={item.description || undefined}
+                          target="_blank"
+                          rel="noopener noreferrer"
                         >
-                          <Icon name="edit" />
-                        </button>
-                      )}
-                    </div>
-                  ))}
-                  {items.length === 0 && (
-                    <button
-                      className="empty-category"
-                      onClick={() => edit(undefined, name)}
-                    >
-                      ＋ 添加一个好去处
-                    </button>
-                  )}
-                </div>
-                {managing && (
-                  <button
-                    className="category-add"
-                    onClick={() => edit(undefined, name)}
-                  >
-                    ＋ 添加网站
-                  </button>
-                )}
-              </section>
-            ))}
+                          <SiteIcon item={item} />
+                          <span className="bookmark-text">
+                            <strong>{item.name}</strong>
+                          </span>
+                          <Icon name="arrow" />
+                        </a>
+                      </div>
+                    ))}
+                  </div>
+                </section>
+              ))}
           </div>
         </main>
       ) : (
@@ -504,210 +344,6 @@ function Homepage() {
           <Workspace />
         </main>
       )}
-      <dialog
-        className="bookmark-dialog"
-        ref={dialogRef}
-        onCancel={() => setEditing(null)}
-        onClick={(event) => {
-          if (event.target === event.currentTarget) {
-            const rect = event.currentTarget.getBoundingClientRect();
-            if (
-              event.clientX < rect.left ||
-              event.clientX > rect.right ||
-              event.clientY < rect.top ||
-              event.clientY > rect.bottom
-            )
-              setEditing(null);
-          }
-        }}
-        aria-labelledby="dialog-title"
-      >
-        <div className="dialog-header">
-          <h2 id="dialog-title">
-            {editing === "new" ? "添加网站" : "编辑网站"}
-          </h2>
-          <button aria-label="关闭" onClick={() => setEditing(null)}>
-            <Icon name="close" />
-          </button>
-        </div>
-        <form onSubmit={save} className="bookmark-form">
-          <label>
-            网站名称
-            <input
-              autoFocus
-              required
-              maxLength={40}
-              value={form.name}
-              onChange={(event) =>
-                setForm({ ...form, name: event.target.value })
-              }
-              placeholder="例如：我的博客"
-            />
-          </label>
-          <label>
-            网站地址
-            <input
-              required
-              value={form.url}
-              onChange={(event) =>
-                setForm({ ...form, url: event.target.value })
-              }
-              placeholder="https://example.com"
-            />
-          </label>
-          <label>
-            描述
-            <input
-              maxLength={70}
-              value={form.description}
-              onChange={(event) =>
-                setForm({ ...form, description: event.target.value })
-              }
-              placeholder="一句话介绍这个网站"
-            />
-          </label>
-          <div className="icon-editor">
-            <div className="icon-preview">
-              <SiteIcon
-                item={{ ...form, id: "preview", name: form.name || "网站" }}
-              />
-            </div>
-            <label>
-              图标
-              <select
-                aria-label="图标"
-                value={form.icon || "letter"}
-                onChange={(event) => {
-                  setError("");
-                  setForm({
-                    ...form,
-                    icon: event.target.value,
-                    iconUrl: undefined,
-                  });
-                }}
-              >
-                <option value="letter">名称首字</option>
-                <optgroup label="网站图标">
-                  {iconChoices.map((icon) => (
-                    <option key={icon.value} value={icon.value}>
-                      {icon.label}
-                    </option>
-                  ))}
-                </optgroup>
-                <option value="image">自定义图片</option>
-              </select>
-            </label>
-          </div>
-          {form.icon === "image" && (
-            <div className="custom-icon-fields">
-              <label>
-                图片地址
-                <input
-                  type="url"
-                  value={
-                    form.iconUrl?.startsWith("data:") ? "" : form.iconUrl || ""
-                  }
-                  onChange={(event) =>
-                    setForm({ ...form, iconUrl: event.target.value })
-                  }
-                  placeholder="https://example.com/icon.png"
-                />
-              </label>
-              <button
-                type="button"
-                className="icon-upload"
-                onClick={() => iconFileRef.current?.click()}
-              >
-                {form.iconUrl?.startsWith("data:")
-                  ? "更换已上传图片"
-                  : "上传图片"}
-              </button>
-              <input
-                ref={iconFileRef}
-                type="file"
-                hidden
-                accept="image/png,image/jpeg,image/webp"
-                aria-label="上传图标文件"
-                onChange={(event) => {
-                  const file = event.target.files?.[0];
-                  if (file) void uploadIcon(file);
-                  event.target.value = "";
-                }}
-              />
-            </div>
-          )}
-          <div className="form-columns">
-            <label>
-              分类
-              <select
-                value={form.category}
-                onChange={(event) =>
-                  setForm({ ...form, category: event.target.value })
-                }
-              >
-                {categories.map((name) => (
-                  <option key={name}>{name}</option>
-                ))}
-              </select>
-            </label>
-            {(!form.icon || form.icon === "letter") && (
-              <label>
-                图标颜色
-                <input
-                  type="color"
-                  value={form.color}
-                  onChange={(event) =>
-                    setForm({ ...form, color: event.target.value })
-                  }
-                />
-              </label>
-            )}
-          </div>
-          <label className="checkbox-label">
-            <input
-              type="checkbox"
-              checked={form.favorite}
-              onChange={(event) =>
-                setForm({ ...form, favorite: event.target.checked })
-              }
-            />
-            显示在常去的地方
-          </label>
-          {error && (
-            <p className="form-error" role="alert">
-              {error}
-            </p>
-          )}
-          <div className="dialog-actions">
-            {editing && editing !== "new" && (
-              <button
-                type="button"
-                className="delete-button"
-                onClick={() => {
-                  try {
-                    persistBookmarks(
-                      bookmarks.filter((item) => item.id !== editing),
-                    );
-                    setEditing(null);
-                  } catch (error) {
-                    setError(
-                      error instanceof Error ? error.message : "删除失败。",
-                    );
-                  }
-                }}
-              >
-                删除网站
-              </button>
-            )}
-            <button type="button" onClick={() => setEditing(null)}>
-              取消
-            </button>
-            <button className="primary-button" type="submit">
-              保存
-            </button>
-          </div>
-        </form>
-      </dialog>
     </div>
   );
 }

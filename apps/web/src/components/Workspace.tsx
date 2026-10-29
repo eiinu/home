@@ -43,6 +43,16 @@ const Workspace: React.FC<{ activeTool: string }> = ({ activeTool }) => {
     Object.entries(toolsConfig).find(([, tools]) =>
       tools.some((tool) => tool.id === activeTool),
     )?.[0] ?? "tools";
+  const [collapsed, setCollapsed] = useState(() => {
+    try { return localStorage.getItem("eiinu-sidebar-collapsed") === "true"; }
+    catch { return false; }
+  });
+  function toggleSidebar() {
+    setCollapsed(value => {
+      try { localStorage.setItem("eiinu-sidebar-collapsed", String(!value)); } catch { /* optional preference */ }
+      return !value;
+    });
+  }
   const [filter, setFilter] = useState("");
   const { theme, setTheme } = useTheme();
 
@@ -150,9 +160,12 @@ const Workspace: React.FC<{ activeTool: string }> = ({ activeTool }) => {
   };
 
   return (
-    <div className="workspace workbench">
+    <div className={`workspace workbench ${collapsed ? "sidebar-collapsed" : ""}`}>
       <aside className="workbench-sidebar" aria-label="工具目录">
-        <h1>我的工具</h1>
+        <div className="workbench-sidebar-heading">
+          <h1>我的工具</h1>
+          <button className="sidebar-toggle" onClick={toggleSidebar} aria-label={collapsed ? "展开工具目录" : "收起工具目录"} aria-expanded={!collapsed} title={collapsed ? "展开工具目录" : "收起工具目录"}><UiIcon name="sidebar" size={18} /></button>
+        </div>
         <label className="tool-search">
           <span>
             <UiIcon name="search" size={16} />
@@ -169,7 +182,7 @@ const Workspace: React.FC<{ activeTool: string }> = ({ activeTool }) => {
             const tools = (
               toolsConfig[category.id as keyof typeof toolsConfig] || []
             ).filter((tool) =>
-              `${tool.label} ${tool.description}`
+              collapsed || `${tool.label} ${tool.description}`
                 .toLowerCase()
                 .includes(filter.toLowerCase()),
             );
@@ -189,6 +202,8 @@ const Workspace: React.FC<{ activeTool: string }> = ({ activeTool }) => {
                       key={tool.id}
                       className={`tool-item ${activeTool === tool.id ? "active" : ""}`}
                       aria-current={activeTool === tool.id ? "page" : undefined}
+                      aria-label={tool.label}
+                      title={collapsed ? tool.label : undefined}
                       href={toolHref(tool.id)}
                     >
                       <span className="tool-item-marker">
@@ -197,7 +212,7 @@ const Workspace: React.FC<{ activeTool: string }> = ({ activeTool }) => {
                           size={16}
                         />
                       </span>
-                      <span>{tool.label}</span>
+                      <span className="tool-item-label">{tool.label}</span>
                       {activeTool === tool.id && (
                         <span className="tool-active-dot" />
                       )}
@@ -207,7 +222,7 @@ const Workspace: React.FC<{ activeTool: string }> = ({ activeTool }) => {
               )
             );
           })}
-          {filter &&
+          {!collapsed && filter &&
             !Object.values(toolsConfig)
               .flat()
               .some((tool) =>

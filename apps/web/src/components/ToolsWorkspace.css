@@ -746,3 +746,22 @@
   align-items: center;
   justify-content: center;
 }
+
+/* The directory can yield space to tools without changing the homepage shell. */
+.workbench-sidebar-heading { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+.sidebar-toggle { display: inline-flex; justify-content: center; align-items: center; border: 0; padding: 8px; border-radius: 6px; background: transparent; color: var(--secondary); cursor: pointer; }
+.sidebar-toggle:hover { background: color-mix(in srgb, var(--accent) 10%, transparent); color: var(--ink); }
+.sidebar-toggle:focus-visible { outline: 2px solid var(--accent); }
+.tools-workspace .workbench.sidebar-collapsed { grid-template-columns: 56px minmax(0, 1fr); }
+.sidebar-collapsed .workbench-sidebar-heading { justify-content: center; padding: 22px 0 18px; }
+.sidebar-collapsed .workbench-sidebar-heading h1,
+.sidebar-collapsed .tool-search,
+.tools-workspace .sidebar-collapsed .category-item,
+.sidebar-collapsed .tool-item-label,
+.sidebar-collapsed .tool-active-dot { display: none; }
+.tools-workspace .sidebar-collapsed .workbench-sidebar { padding-right: 12px; }
+.tools-workspace .sidebar-collapsed .tool-item { justify-content: center; padding: 12px 0; }
+.sidebar-collapsed .workbench-directory section { margin-bottom: 12px; }
+@media (max-width: 767px) {
+  .sidebar-collapsed .tool-search, .sidebar-collapsed .tool-item-label { display: initial; }
+}

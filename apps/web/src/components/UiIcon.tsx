@@ -1,6 +1,7 @@
 import type { ReactNode } from "react";
 
 const paths = {
+  sidebar: <><rect x="3" y="4" width="18" height="16" rx="2" /><path d="M9 4v16" /></>,
   sun: (
     <>
       <circle cx="12" cy="12" r="4" />

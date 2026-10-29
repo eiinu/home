@@ -3,6 +3,7 @@ import "./Workspace.css";
 import "./ToolsWorkspace.css";
 import "./ToolDetails.css";
 import UiIcon from "./UiIcon";
+import { toolCategories as categories, toolsConfig, toolHref } from "../toolRoutes";
 import type { UiIconName } from "./UiIcon";
 import { useTheme } from "./ThemeProvider";
 import {
@@ -37,9 +38,11 @@ const toolGlyphs: Record<string, UiIconName> = {
   remarkjs: "markdown",
   "theme-settings": "settings",
 };
-const Workspace: React.FC = () => {
-  const [activeCategory, setActiveCategory] = useState("tools");
-  const [activeTool, setActiveTool] = useState("base64-tool");
+const Workspace: React.FC<{ activeTool: string }> = ({ activeTool }) => {
+  const activeCategory =
+    Object.entries(toolsConfig).find(([, tools]) =>
+      tools.some((tool) => tool.id === activeTool),
+    )?.[0] ?? "tools";
   const [filter, setFilter] = useState("");
   const { theme, setTheme } = useTheme();
 
@@ -63,157 +66,6 @@ const Workspace: React.FC = () => {
     }),
     [],
   );
-
-  // 主分类配置
-  const categories = [
-    {
-      id: "tools",
-      icon: "🛠️",
-      label: "工具",
-    },
-    {
-      id: "creative",
-      icon: "🎨",
-      label: "创意工坊",
-    },
-    {
-      id: "editor",
-      icon: "📝",
-      label: "编辑器",
-    },
-    // 暂时关闭游戏功能
-    // {
-    //   id: 'games',
-    //   icon: '🎮',
-    //   label: '游戏'
-    // },
-    {
-      id: "settings",
-      icon: "⚙️",
-      label: "设置",
-    },
-  ];
-
-  // 工具配置
-  const toolsConfig = {
-    tools: [
-      {
-        id: "json-formatter",
-        icon: "{}",
-        label: "JSON 工具",
-        description: "JSON 格式化和验证",
-      },
-      {
-        id: "html-formatter",
-        icon: "</>",
-        label: "HTML 工具",
-        description: "HTML 格式化和美化",
-      },
-      {
-        id: "xml-formatter",
-        icon: "🧾",
-        label: "XML 工具",
-        description: "XML 格式化和美化",
-      },
-      {
-        id: "base64-tool",
-        icon: "🔐",
-        label: "Base64 工具",
-        description: "Base64 编码和解码",
-      },
-      {
-        id: "regex-tester",
-        icon: "🔍",
-        label: "正则测试器",
-        description: "正则表达式测试和验证",
-      },
-      {
-        id: "cron-helper",
-        icon: "⏱️",
-        label: "Cron 助手",
-        description: "生成与解释 Cron 表达式",
-      },
-      {
-        id: "sse-parser",
-        icon: "📡",
-        label: "SSE 解析器",
-        description: "Server-Sent Events 解析",
-      },
-      {
-        id: "keyboard-listener",
-        icon: "⌨️",
-        label: "键盘监听器",
-        description: "监听键盘事件",
-      },
-      {
-        id: "clipboard-manager",
-        icon: "📋",
-        label: "剪贴板管理",
-        description: "剪贴板内容管理",
-      },
-    ],
-    creative: [
-      {
-        id: "border-editor",
-        icon: "🖼️",
-        label: "CSS 边框编辑器",
-        description: "可视化编辑 CSS 边框样式",
-      },
-      {
-        id: "color-tool",
-        icon: "🎨",
-        label: "颜色工具",
-        description: "颜色选择器和格式转换",
-      },
-    ],
-    editor: [
-      {
-        id: "markdown-it",
-        icon: "📝",
-        label: "Markdown-it",
-        description: "基于 markdown-it 的 Markdown 编辑与预览",
-      },
-      {
-        id: "remarkjs",
-        icon: "🪧",
-        label: "RemarkJS",
-        description: "基于 remarkjs 的 Markdown 编辑与 AST 展示",
-      },
-    ],
-    // 暂时关闭游戏功能
-    // games: [
-    //   {
-    //     id: 'game-2048',
-    //     icon: '🎯',
-    //     label: '2048',
-    //     description: '经典数字合成游戏'
-    //   }
-    // ],
-    settings: [
-      {
-        id: "theme-settings",
-        icon: "🎨",
-        label: "主题设置",
-        description: "切换应用主题",
-      },
-    ],
-  };
-
-  // 处理分类点击
-  const handleCategoryClick = (categoryId: string) => {
-    setActiveCategory(categoryId);
-    // 设置该分类下的第一个工具为活跃工具
-    const tools = toolsConfig[categoryId as keyof typeof toolsConfig] || [];
-    if (tools.length > 0) {
-      setActiveTool(tools[0].id);
-    }
-  };
-
-  // 处理工具点击
-  const handleToolClick = (toolId: string, categoryId: string) => {
-    setActiveCategory(categoryId);
-    setActiveTool(toolId);
-  };
 
   // 处理主题变更
   const handleThemeChange = (newTheme: "light" | "dark" | "auto") => {
@@ -324,18 +176,20 @@ const Workspace: React.FC = () => {
             return (
               tools.length > 0 && (
                 <section key={category.id}>
-                  <button
+                  <a
                     className={`category-item ${activeCategory === category.id ? "active" : ""}`}
-                    onClick={() => handleCategoryClick(category.id)}
+                    href={toolHref(
+                      toolsConfig[category.id as keyof typeof toolsConfig][0].id,
+                    )}
                   >
                     {category.label}
-                  </button>
+                  </a>
                   {tools.map((tool) => (
-                    <button
+                    <a
                       key={tool.id}
                       className={`tool-item ${activeTool === tool.id ? "active" : ""}`}
                       aria-current={activeTool === tool.id ? "page" : undefined}
-                      onClick={() => handleToolClick(tool.id, category.id)}
+                      href={toolHref(tool.id)}
                     >
                       <span className="tool-item-marker">
                         <UiIcon
@@ -347,7 +201,7 @@ const Workspace: React.FC = () => {
                       {activeTool === tool.id && (
                         <span className="tool-active-dot" />
                       )}
-                    </button>
+                    </a>
                   ))}
                 </section>
               )
@@ -369,10 +223,7 @@ const Workspace: React.FC = () => {
             aria-label="选择工具"
             value={activeTool}
             onChange={(event) => {
-              const category = Object.entries(toolsConfig).find(([, tools]) =>
-                tools.some((tool) => tool.id === event.target.value),
-              );
-              if (category) handleToolClick(event.target.value, category[0]);
+              window.location.hash = toolHref(event.target.value);
             }}
           >
             {categories.map((category) => (

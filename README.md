@@ -26,6 +26,8 @@ Eiinu 的个人导航主页与浏览器工具集。
 | 创意   | CSS 边框编辑、颜色转换、调色板、渐变生成       |
 | 编辑器 | Markdown-it 预览与 Tokens、RemarkJS 预览与 AST |
 
+每个工具都有独立链接，例如 [JSON 工具](https://home.eiinu.me/#tools/json-formatter)。切换工具会更新 URL，支持直接访问、刷新以及浏览器前进后退；旧的 `#tools` 入口会打开 Base64 工具。无效工具地址会回到默认工具。
+
 工具在浏览器中处理输入内容，无需上传至应用后端。剪贴板功能需要安全上下文（HTTPS 或 localhost）及浏览器授权。
 
 ## 本地开发
@@ -61,7 +63,7 @@ pnpm lint
 pnpm --filter web preview
 ```
 
-目前组件库仍有既有的 ESLint、类型诊断，以及 XML 格式化往返时的文本空白问题。构建完成不代表这些检查全部通过；可通过 `pnpm --filter web test:links` 运行移动端链接策略测试；其余工具尚未配置自动化测试脚本。
+目前组件库仍有既有的 ESLint、类型诊断，以及 XML 格式化往返时的文本空白问题。构建完成不代表这些检查全部通过；可通过 `pnpm --filter web test:links` 运行App 跳转策略测试，通过 `pnpm --filter web test:routes` 运行工具路由测试；其余工具尚未配置自动化测试脚本。
 
 ## 项目结构
 
@@ -93,7 +95,7 @@ AGENTS.md             界面设计及提交约定
 | Output Directory | `apps/web/dist`                  |
 | Node.js          | 24.x                             |
 
-应用是静态站点，无需配置账号服务、数据库或应用环境变量。`#home`、`#tools` 使用哈希导航，无需额外配置路由重写。
+应用是静态站点，无需配置账号服务、数据库或应用环境变量。`#home`、`#tools/<工具 ID>` 使用哈希导航，无需额外配置路由重写。
 
 ## 协作
 

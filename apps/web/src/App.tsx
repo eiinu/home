@@ -11,6 +11,7 @@ import BookmarkLink from "./components/BookmarkLink";
 import type { Bookmark } from "./bookmarks";
 import { validateIconUrl } from "./bookmarks";
 import "./App.css";
+import { resolveRoute } from "./toolRoutes";
 
 function SiteIcon({ item }: { item: Bookmark }) {
   const [failedSource, setFailedSource] = useState<string | null>(null);
@@ -53,16 +54,22 @@ type Engine = keyof typeof engines;
 function Homepage() {
   const { isDark, setTheme } = useTheme();
   const [bookmarks] = useState(loadBookmarks);
-  const [view, setView] = useState(() =>
-    location.hash === "#tools" ? "tools" : "home",
-  );
+  const [route, setRoute] = useState(() => resolveRoute(location.hash));
+  const { view } = route;
   const [query, setQuery] = useState("");
   const [engine, setEngine] = useState<Engine>("Google");
   const [now, setNow] = useState(() => new Date());
   const inputRef = useRef<HTMLInputElement>(null);
   useEffect(() => {
     const timer = setInterval(() => setNow(new Date()), 60000);
-    const onHash = () => setView(location.hash === "#tools" ? "tools" : "home");
+    const onHash = () => {
+      const next = resolveRoute(location.hash);
+      if (location.hash !== next.hash && location.hash !== "") {
+        window.history.replaceState(null, "", next.hash);
+      }
+      setRoute(next);
+    };
+    onHash();
     window.addEventListener("hashchange", onHash);
     return () => {
       clearInterval(timer);
@@ -242,7 +249,7 @@ function Homepage() {
         </main>
       ) : (
         <main className="tools-workspace">
-          <Workspace />
+          <Workspace activeTool={route.toolId} />
         </main>
       )}
     </div>

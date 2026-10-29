@@ -78,6 +78,7 @@
   box-shadow: none;
   transform: none;
   text-align: left;
+  text-decoration: none;
   border-radius: 0;
 }
 .tools-workspace .workbench .category-item:hover {
@@ -98,6 +99,7 @@
   max-width: none;
   font-size: 12px;
   text-align: left;
+  text-decoration: none;
   flex-direction: row;
   font-weight: 400;
   transition: background 0.15s;
